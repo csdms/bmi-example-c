@@ -1,5 +1,5 @@
 #include <heat/bmi_heat.h>
-#include <heat/bmi.h>
+#include <heat/bmilib.h>
 #include <heat/heat.h>
 
 #include <stdio.h>
