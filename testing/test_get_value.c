@@ -1,25 +1,25 @@
 #include <heat/bmi_heat.h>
+#include <heat/bmi.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 
-void print_var_values (void *self, const char *var_name);
+void print_var_values (void *model, const char *var_name);
 
 int
 main (void)
 {
   int i;
   const int n_steps = 10;
-  void *self = NULL;
+  BMI_Model * model = (BMI_Model*)malloc (sizeof(BMI_Model));
 
-  BMI_HEAT_Initialize (NULL, &self);
+  Construct_heat_bmi(model);
 
-  if (!self)
-    return EXIT_FAILURE;
+  BMI_Initialize (model, NULL);
 
   {
     char name[BMI_MAX_COMPONENT_NAME];
-    BMI_HEAT_Get_component_name (self, name);
+    BMI_Get_component_name (model, name);
     fprintf (stdout, "%s\n", name);
   }
 
@@ -27,33 +27,35 @@ main (void)
   {
     fprintf (stdout, "Values at time %d\n", i);
     fprintf (stdout, "==============\n");
-    print_var_values (self, "plate_surface__temperature");
+    print_var_values (model, "plate_surface__temperature");
 
-    BMI_HEAT_Update (self);
+    BMI_Update (model);
   }
 
   fprintf (stdout, "Values at time %d\n", i);
   fprintf (stdout, "==============\n");
-  print_var_values (self, "plate_surface__temperature");
+  print_var_values (model, "plate_surface__temperature");
 
-  BMI_HEAT_Finalize (self);
+  BMI_Finalize (model);
+
+  free (model);
 
   return EXIT_SUCCESS;
 }
 
 void
-print_var_values (void *self, const char *var_name)
+print_var_values (void *model, const char *var_name)
 {
   double *var = NULL;
   int len;
   int rank;
   int *shape;
 
-  BMI_HEAT_Get_var_rank (self, var_name, &rank);
+  BMI_Get_var_rank (model, var_name, &rank);
   fprintf (stderr, "rank = %d\n", rank);
   shape = (int*) malloc (sizeof (int) * rank);
 
-  BMI_HEAT_Get_grid_shape (self, var_name, shape);
+  BMI_Get_grid_shape (model, var_name, shape);
   fprintf (stderr, "shape = %d x %d\n", shape[0], shape[1]);
 
   {
@@ -64,7 +66,7 @@ print_var_values (void *self, const char *var_name)
 
   var = (double*) malloc (sizeof (double)*len);
 
-  BMI_HEAT_Get_value (self, var_name, var);
+  BMI_Get_value (model, var_name, var);
 
   fprintf (stdout, "Variable: %s\n", var_name);
   fprintf (stdout, "================\n");

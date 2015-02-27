@@ -1,4 +1,5 @@
 #include <heat/bmi_heat.h>
+#include <heat/bmi.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,14 +8,17 @@
 int
 main (void)
 {
-  void *self = NULL;
   int status = BMI_SUCCESS;
+  BMI_Model * model = (BMI_Model*)malloc (sizeof(BMI_Model));
+
+  Construct_heat_bmi(model);
 
   {
     fprintf (stdout, "Initializing... ");
+    fflush(stdout);
 
-    status = BMI_HEAT_Initialize (NULL, &self);
-    if (status == BMI_FAILURE || !self)
+    status = BMI_Initialize (model, NULL);
+    if (status == BMI_FAILURE)
       return EXIT_FAILURE;
 
     fprintf (stdout, "PASS\n");
@@ -23,7 +27,7 @@ main (void)
   {
     char name[BMI_MAX_COMPONENT_NAME];
 
-    status = BMI_HEAT_Get_component_name (self, name);
+    status = BMI_Get_component_name (model, name);
     if (status == BMI_FAILURE)
       return EXIT_FAILURE;
 
@@ -36,7 +40,7 @@ main (void)
     double time;
     double dt;
 
-    status = BMI_HEAT_Get_time_step(self, &dt);
+    status = BMI_Get_time_step(model, &dt);
     if (status == BMI_FAILURE)
       return EXIT_FAILURE;
 
@@ -44,11 +48,11 @@ main (void)
     {
       fprintf (stdout, "Running until t = %d... ", i+1);
 
-      status = BMI_HEAT_Update (self);
+      status = BMI_Update (model);
       if (status == BMI_FAILURE)
         return EXIT_FAILURE;
       
-      status = BMI_HEAT_Get_current_time (self, &time);
+      status = BMI_Get_current_time (model, &time);
       if (status == BMI_FAILURE)
         return EXIT_FAILURE;
 
@@ -60,11 +64,11 @@ main (void)
 
     fprintf (stdout, "Running until t = %f... ", 1000.5);
 
-    status = BMI_HEAT_Update_until (self, 1000.5);
+    status = BMI_Update_until (model, 1000.5);
     if (status == BMI_FAILURE)
       return EXIT_FAILURE;
 
-    status = BMI_HEAT_Get_current_time (self, &time);
+    status = BMI_Get_current_time (model, &time);
     if (status == BMI_FAILURE)
       return EXIT_FAILURE;
 
@@ -78,11 +82,13 @@ main (void)
 
   fprintf (stdout, "Finalizing... ");
 
-  status = BMI_HEAT_Finalize (self);
+  status = BMI_Finalize (model);
   if (status == BMI_FAILURE)
     return EXIT_FAILURE;
 
   fprintf (stdout, "PASS\n");
+
+  free (model);
 
   return EXIT_SUCCESS;
 }

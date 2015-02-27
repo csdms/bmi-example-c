@@ -1,23 +1,24 @@
 #include <heat/bmi_heat.h>
+#include <heat/bmi.h>
+#include <heat/heat.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 
-void print_var_info (void *self, const char *var);
+void print_var_info (BMI_Model *model, const char *var);
 
 int
 main (void)
 {
-  void *self = NULL;
+  BMI_Model *model = (BMI_Model*)malloc (sizeof(BMI_Model));
 
-  BMI_HEAT_Initialize (NULL, &self);
+  Construct_heat_bmi(model);
 
-  if (!self)
-    return EXIT_FAILURE;
+  BMI_Initialize (model, NULL);
 
   {
     char name[BMI_MAX_COMPONENT_NAME];
-    BMI_HEAT_Get_component_name (self, name);
+    BMI_Get_component_name (model, name);
     fprintf (stdout, "%s\n", name);
   }
 
@@ -26,15 +27,15 @@ main (void)
     char **names = NULL;
     int i;
 
-    BMI_HEAT_Get_input_var_name_count(self, &n_names);
+    BMI_Get_input_var_name_count(model, &n_names);
 
     names = (char**) malloc (sizeof(char*) * n_names);
     for (i = 0; i<n_names; i++)
       names[i] = (char*) malloc (sizeof (char) * BMI_MAX_VAR_NAME);
 
-    BMI_HEAT_Get_input_var_names (self, names);
+    BMI_Get_input_var_names (model, names);
     for (i = 0; i<n_names; i++)
-      print_var_info (self, names[i]);
+      print_var_info (model, names[i]);
 
     for (i = 0; i<n_names; i++)
       free (names[i]);
@@ -46,28 +47,31 @@ main (void)
     char **names = NULL;
     int i;
 
-    BMI_HEAT_Get_output_var_name_count(self, &n_names);
+    BMI_Get_output_var_name_count(model, &n_names);
 
     names = (char**) malloc (sizeof(char*) * n_names);
     for (i = 0; i<n_names; i++)
       names[i] = (char*) malloc (sizeof (char) * BMI_MAX_VAR_NAME);
 
-    BMI_HEAT_Get_output_var_names (self, names);
+    BMI_Get_output_var_names (model, names);
+    fprintf(stdout, "no names is %d\n", n_names); fflush(stdout);
     for (i = 0; i<n_names; i++)
-      print_var_info (self, names[i]);
+      print_var_info (model, names[i]);
 
     for (i = 0; i<n_names; i++)
       free (names[i]);
     free (names);
   }
 
-  BMI_HEAT_Finalize (self);
+  BMI_Finalize (model);
+
+  free (model);
 
   return EXIT_SUCCESS;
 }
 
 void
-print_var_info (void *self, const char *var)
+print_var_info (BMI_Model *model, const char *var)
 {
   char type[2048];
   char units[BMI_MAX_UNITS_NAME];
@@ -76,17 +80,17 @@ print_var_info (void *self, const char *var)
   double *spacing;
   double *origin;
 
-  BMI_HEAT_Get_var_type (self, var, type);
-  BMI_HEAT_Get_var_units (self, var, units);
-  BMI_HEAT_Get_var_rank (self, var, &n_dims);
+  BMI_Get_var_type (model, var, type);
+  BMI_Get_var_units (model, var, units);
+  BMI_Get_var_rank (model, var, &n_dims);
 
   shape = (int*) malloc (sizeof (int)*n_dims);
   spacing = (double*) malloc (sizeof (double)*n_dims);
   origin = (double*) malloc (sizeof (double)*n_dims);
 
-  BMI_HEAT_Get_grid_shape (self, var, shape);
-  BMI_HEAT_Get_grid_spacing (self, var, spacing);
-  BMI_HEAT_Get_grid_origin (self, var, origin);
+  BMI_Get_grid_shape (model, var, shape);
+  BMI_Get_grid_spacing (model, var, spacing);
+  BMI_Get_grid_origin (model, var, origin);
 
   fprintf (stdout, "\n");
   fprintf (stdout, "Variable info\n");

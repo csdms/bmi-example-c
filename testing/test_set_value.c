@@ -1,24 +1,27 @@
 #include <heat/bmi_heat.h>
+#include <heat/bmi.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 
-void print_var_values (void *self, const char *var_name);
+void print_var_values (void *model, const char *var_name);
 
 int
 main (void)
 {
-  void *self = NULL;
   double *new_vals = NULL;
   int err = 0;
+  BMI_Model * model = (BMI_Model*)malloc (sizeof(BMI_Model));
 
-  err = BMI_HEAT_Initialize (NULL, &self);
-  if (err || !self)
+  Construct_heat_bmi(model);
+
+  err = BMI_Initialize (model, NULL);
+  if (err)
     return EXIT_FAILURE;
 
   {
     char name[BMI_MAX_COMPONENT_NAME];
-    BMI_HEAT_Get_component_name (self, name);
+    BMI_Get_component_name (model, name);
   
     fprintf (stdout, "%s\n", name);
   }
@@ -29,10 +32,10 @@ main (void)
     int len = 0;
     int i;
 
-    BMI_HEAT_Get_var_rank (self, "plate_surface__temperature", &n_dims);
+    BMI_Get_var_rank (model, "plate_surface__temperature", &n_dims);
     shape = (int*) malloc (sizeof (int)*n_dims);
 
-    BMI_HEAT_Get_grid_shape (self, "plate_surface__temperature", shape);
+    BMI_Get_grid_shape (model, "plate_surface__temperature", shape);
     for (i = 0, len = 1; i < n_dims; i++)
       len *= shape[i];
 
@@ -45,13 +48,13 @@ main (void)
 
   fprintf (stdout, "Values before set\n");
   fprintf (stdout, "=================\n");
-  print_var_values (self, "plate_surface__temperature");
+  print_var_values (model, "plate_surface__temperature");
 
-  BMI_HEAT_Set_value (self, "plate_surface__temperature", new_vals);
+  BMI_Set_value (model, "plate_surface__temperature", new_vals);
 
   fprintf (stdout, "Values after set\n");
   fprintf (stdout, "================\n");
-  print_var_values (self, "plate_surface__temperature");
+  print_var_values (model, "plate_surface__temperature");
 
   {
     int inds[5] = {1, 2, 4, 8, 16};
@@ -59,10 +62,10 @@ main (void)
     double *p;
     int i;
 
-    BMI_HEAT_Set_value_at_indices (self, "plate_surface__temperature", inds, 5, vals);
-    print_var_values (self, "plate_surface__temperature");
+    BMI_Set_value_at_indices (model, "plate_surface__temperature", inds, 5, vals);
+    print_var_values (model, "plate_surface__temperature");
 
-    BMI_HEAT_Get_value_ptr (self, "plate_surface__temperature", (void**)(&p));
+    BMI_Get_value_ptr (model, "plate_surface__temperature", (void**)(&p));
     for (i=0; i<5; i++) {
       fprintf (stdout, "Checking %d...", inds[i]);
       if (p[inds[i]] == vals[i])
@@ -72,23 +75,25 @@ main (void)
 
   free (new_vals);
 
-  BMI_HEAT_Finalize (self);
+  BMI_Finalize (model);
+
+  free (model);
 
   return EXIT_SUCCESS;
 }
 
 void
-print_var_values (void *self, const char *var_name)
+print_var_values (void *model, const char *var_name)
 {
   double *var = NULL;
   int n_dims = 0;
   int *shape = NULL;
 
-  BMI_HEAT_Get_var_rank (self, var_name, &n_dims);
+  BMI_Get_var_rank (model, var_name, &n_dims);
   shape = (int*) malloc (sizeof (int)*n_dims);
 
-  BMI_HEAT_Get_grid_shape (self, "plate_surface__temperature", shape);
-  BMI_HEAT_Get_value_ptr (self, var_name, (void**)(&var));
+  BMI_Get_grid_shape (model, "plate_surface__temperature", shape);
+  BMI_Get_value_ptr (model, var_name, (void**)(&var));
 
   fprintf (stdout, "Variable: %s\n", var_name);
   fprintf (stdout, "Number of dimension: %d\n", n_dims);
