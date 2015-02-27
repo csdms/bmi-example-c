@@ -3,26 +3,71 @@
 #include <string.h>
 #include <float.h>
 
-#include "bmi_heat.h"
 #include "heat.h"
+#include "bmi.h"
 
 
-#define BMI_HEAT_INPUT_VAR_NAME_COUNT 1
-#define BMI_HEAT_OUTPUT_VAR_NAME_COUNT 1
+#define INPUT_VAR_NAME_COUNT 1
+#define OUTPUT_VAR_NAME_COUNT 1
 
 
-const char *output_var_names[BMI_HEAT_OUTPUT_VAR_NAME_COUNT] = {
+static const char *output_var_names[OUTPUT_VAR_NAME_COUNT] = {
   "plate_surface__temperature"
 };
 
 
-const char *input_var_names[BMI_HEAT_INPUT_VAR_NAME_COUNT] = {
+static const char *input_var_names[INPUT_VAR_NAME_COUNT] = {
   "plate_surface__temperature"
 };
 
 
-int
-BMI_HEAT_Initialize (const char *file, void ** handle)
+static int
+Get_start_time (void *self, double * time)
+{
+  if (time) {
+    *time = 0.;
+    return BMI_SUCCESS;
+  }
+  else {
+    return BMI_FAILURE;
+  }
+}
+
+
+static int
+Get_end_time (void *self, double * time)
+{
+  *time = ((HeatModel *)self)->t_end;
+  return BMI_SUCCESS;
+}
+
+
+static int
+Get_time_step (void *self, double * dt)
+{
+  *dt = ((HeatModel *)self)->dt;
+  return BMI_SUCCESS;
+}
+
+
+static int
+Get_time_units (void *self, char * units)
+{
+  strncpy (units, "-", BMI_MAX_UNITS_NAME);
+  return BMI_SUCCESS;
+}
+
+
+static int
+Get_current_time (void *self, double * time)
+{
+  *time = ((HeatModel *)self)->t;
+  return BMI_SUCCESS;
+}
+
+
+static int
+Initialize (const char *file, void ** handle)
 {
   HeatModel * self = NULL;
 
@@ -36,12 +81,14 @@ BMI_HEAT_Initialize (const char *file, void ** handle)
 
   *handle = (void *) self;
 
+  fprintf(stderr, "self is %d\n", self);
+
   return BMI_SUCCESS;
 }
 
 
-int
-BMI_HEAT_Update (void *self)
+static int
+Update (void *self)
 {
   heat_advance_in_time ((HeatModel *) self);
 
@@ -49,17 +96,17 @@ BMI_HEAT_Update (void *self)
 }
 
 
-int
-BMI_HEAT_Update_frac (void *self, double f)
+static int
+Update_frac (void *self, double f)
 {
   if (f>0) {
     double dt;
 
-    BMI_HEAT_Get_time_step (self, &dt);
+    Get_time_step (self, &dt);
 
     ((HeatModel *)self)->dt = f * dt;
 
-    BMI_HEAT_Update (self);
+    Update (self);
 
     ((HeatModel *)self)->dt = dt;
   }
@@ -68,24 +115,24 @@ BMI_HEAT_Update_frac (void *self, double f)
 }
 
 
-int
-BMI_HEAT_Update_until (void *self, double t)
+static int
+Update_until (void *self, double t)
 {
   {
     double dt;
     double now;
 
-    BMI_HEAT_Get_time_step (self, &dt);
-    BMI_HEAT_Get_current_time (self, &now);
+    Get_time_step (self, &dt);
+    Get_current_time (self, &now);
 
     {
       int n;
       const double n_steps = (t - now) / dt;
       for (n=0; n<(int)n_steps; n++) {
-        BMI_HEAT_Update (self);
+        Update (self);
       }
 
-      BMI_HEAT_Update_frac (self, n_steps - (int)n_steps);
+      Update_frac (self, n_steps - (int)n_steps);
     }
   }
 
@@ -93,8 +140,8 @@ BMI_HEAT_Update_until (void *self, double t)
 }
 
 
-int
-BMI_HEAT_Finalize (void *self)
+static int
+Finalize (void *self)
 {
   if (self)
     heat_free (self);
@@ -103,8 +150,8 @@ BMI_HEAT_Finalize (void *self)
 }
 
 
-int
-BMI_HEAT_Get_var_type (void *self, const char *name, char * type)
+static int
+Get_var_type (void *self, const char *name, char * type)
 {
   if (strcmp (name, "plate_surface__temperature") == 0) {
     strncpy(type, "double", 2048);
@@ -117,8 +164,8 @@ BMI_HEAT_Get_var_type (void *self, const char *name, char * type)
 }
 
 
-int
-BMI_HEAT_Get_var_units (void *self, const char *name, char * units)
+static int
+Get_var_units (void *self, const char *name, char * units)
 {
   if (strcmp (name, "plate_surface__temperature") == 0) {
     strncpy (units, "K", BMI_MAX_UNITS_NAME);
@@ -131,8 +178,8 @@ BMI_HEAT_Get_var_units (void *self, const char *name, char * units)
 }
 
 
-int
-BMI_HEAT_Get_var_rank (void *self, const char *name, int * rank)
+static int
+Get_var_rank (void *self, const char *name, int * rank)
 {
   if (strcmp (name, "plate_surface__temperature") == 0) {
     *rank = 2;
@@ -145,8 +192,8 @@ BMI_HEAT_Get_var_rank (void *self, const char *name, int * rank)
 }
 
 
-int
-BMI_HEAT_Get_var_size (void *self, const char *name, int * size)
+static int
+Get_var_size (void *self, const char *name, int * size)
 {
   int status = BMI_FAILURE;
 
@@ -159,15 +206,15 @@ BMI_HEAT_Get_var_size (void *self, const char *name, int * size)
 }
 
 
-int
-BMI_HEAT_Get_var_nbytes (void *self, const char *name, int * nbytes)
+static int
+Get_var_nbytes (void *self, const char *name, int * nbytes)
 {
   int status = BMI_FAILURE;
 
   {
     int size = 0;
 
-    status = BMI_HEAT_Get_var_size (self, name, &size);
+    status = Get_var_size (self, name, &size);
     if (status == BMI_FAILURE)
       return status;
 
@@ -179,20 +226,23 @@ BMI_HEAT_Get_var_nbytes (void *self, const char *name, int * nbytes)
 }
 
 
-int
-BMI_HEAT_Get_grid_shape (void *self, const char *name, int * shape)
+static int
+Get_grid_shape (void *self, const char *name, int * shape)
 {
   if (strcmp (name, "plate_surface__temperature") == 0) {
     shape[0] = ((HeatModel *)self)->shape[0];
     shape[1] = ((HeatModel *)self)->shape[1];
+
+  fprintf(stderr, "shape is %d x %d\n", shape[0], shape[1]);
+  fflush(stderr);
   }
 
   return BMI_SUCCESS;
 }
 
 
-int
-BMI_HEAT_Get_grid_spacing (void *self, const char *name, double * spacing)
+static int
+Get_grid_spacing (void *self, const char *name, double * spacing)
 {
   if (strcmp (name, "plate_surface__temperature") == 0) {
     spacing[0] = ((HeatModel *)self)->spacing[0];
@@ -203,8 +253,8 @@ BMI_HEAT_Get_grid_spacing (void *self, const char *name, double * spacing)
 }
 
 
-int
-BMI_HEAT_Get_grid_origin (void *self, const char *name, double * origin)
+static int
+Get_grid_origin (void *self, const char *name, double * origin)
 {
   if (strcmp (name, "plate_surface__temperature") == 0) {
     origin[0] = 0.;
@@ -215,8 +265,8 @@ BMI_HEAT_Get_grid_origin (void *self, const char *name, double * origin)
 }
 
 
-int
-BMI_HEAT_Get_grid_type (void *self, const char *name, char * type)
+static int
+Get_grid_type (void *self, const char *name, char * type)
 {
   int status = BMI_FAILURE;
 
@@ -235,32 +285,8 @@ BMI_HEAT_Get_grid_type (void *self, const char *name, char * type)
 }
 
 
-int
-BMI_HEAT_Get_value (void *self, const char *name, void *dest)
-{
-  int status = BMI_FAILURE;
-
-  {
-    void *src = NULL;
-    int nbytes = 0;
-
-    status = BMI_HEAT_Get_value_ptr (self, name, &src);
-    if (status == BMI_FAILURE)
-      return status;
-
-    status = BMI_HEAT_Get_var_nbytes (self, name, &nbytes);
-    if (status == BMI_FAILURE)
-      return status;
-
-    memcpy (dest, src, nbytes);
-  }
-
-  return BMI_SUCCESS;
-}
-
-
-int
-BMI_HEAT_Get_value_ptr (void *self, const char *name, void **dest)
+static int
+Get_value_ptr (void *self, const char *name, void **dest)
 {
   int status = BMI_FAILURE;
 
@@ -281,8 +307,32 @@ BMI_HEAT_Get_value_ptr (void *self, const char *name, void **dest)
 }
 
 
-int
-BMI_HEAT_Get_value_at_indices (void *self, const char *name, void *dest,
+static int
+Get_value (void *self, const char *name, void *dest)
+{
+  int status = BMI_FAILURE;
+
+  {
+    void *src = NULL;
+    int nbytes = 0;
+
+    status = Get_value_ptr (self, name, &src);
+    if (status == BMI_FAILURE)
+      return status;
+
+    status = Get_var_nbytes (self, name, &nbytes);
+    if (status == BMI_FAILURE)
+      return status;
+
+    memcpy (dest, src, nbytes);
+  }
+
+  return BMI_SUCCESS;
+}
+
+
+static int
+Get_value_at_indices (void *self, const char *name, void *dest,
     int * inds, int len)
 {
   int status = BMI_FAILURE;
@@ -291,7 +341,7 @@ BMI_HEAT_Get_value_at_indices (void *self, const char *name, void *dest,
     void *src = NULL;
     const int itemsize = sizeof(double);
 
-    status = BMI_HEAT_Get_value_ptr (self, name, &src);
+    status = Get_value_ptr (self, name, &src);
     if (status == BMI_FAILURE)
       return status;
 
@@ -311,8 +361,8 @@ BMI_HEAT_Get_value_at_indices (void *self, const char *name, void *dest,
 }
 
 
-int
-BMI_HEAT_Set_value (void *self, const char *name, void *array)
+static int
+Set_value (void *self, const char *name, void *array)
 {
   int status = BMI_FAILURE;
 
@@ -320,11 +370,11 @@ BMI_HEAT_Set_value (void *self, const char *name, void *array)
     void * dest = NULL;
     int nbytes = 0;
 
-    status = BMI_HEAT_Get_value_ptr (self, name, &dest);
+    status = Get_value_ptr (self, name, &dest);
     if (status == BMI_FAILURE)
       return status;
     
-    status = BMI_HEAT_Get_var_nbytes (self, name, &nbytes);
+    status = Get_var_nbytes (self, name, &nbytes);
     if (status == BMI_FAILURE)
       return status;
 
@@ -337,8 +387,8 @@ BMI_HEAT_Set_value (void *self, const char *name, void *array)
 }
 
 
-int
-BMI_HEAT_Set_value_at_indices (void *self, const char *name, int * inds, int len,
+static int
+Set_value_at_indices (void *self, const char *name, int * inds, int len,
     void *src)
 {
   int status = BMI_FAILURE;
@@ -347,7 +397,7 @@ BMI_HEAT_Set_value_at_indices (void *self, const char *name, int * inds, int len
     void * to = NULL;
     const int itemsize = sizeof(double);
 
-    status = BMI_HEAT_Get_value_ptr (self, name, &to);
+    status = Get_value_ptr (self, name, &to);
     if (status == BMI_FAILURE)
       return status;
 
@@ -366,92 +416,101 @@ BMI_HEAT_Set_value_at_indices (void *self, const char *name, int * inds, int len
 }
 
 
-int
-BMI_HEAT_Get_component_name (void *self, char * name)
+static int
+Get_component_name (void *self, char * name)
 {
   strncpy (name, "The 2D Heat Equation", BMI_MAX_COMPONENT_NAME);
   return BMI_SUCCESS;
 }
 
 
-int
-BMI_HEAT_Get_input_var_name_count (void *self, int * count)
+static int
+Get_input_var_name_count (void *self, int * count)
 {
-  *count = BMI_HEAT_INPUT_VAR_NAME_COUNT;
+  *count = INPUT_VAR_NAME_COUNT;
   return BMI_SUCCESS;
 }
 
 
-int
-BMI_HEAT_Get_input_var_names (void *self, char ** names)
+static int
+Get_input_var_names (void *self, char ** names)
 {
   int i;
-  for (i=0; i<BMI_HEAT_INPUT_VAR_NAME_COUNT; i++) {
+  for (i=0; i<INPUT_VAR_NAME_COUNT; i++) {
     strncpy (names[i], input_var_names[i], BMI_MAX_VAR_NAME);
   }
   return BMI_SUCCESS;
 }
 
 
-int
-BMI_HEAT_Get_output_var_name_count (void *self, int * count)
+static int
+Get_output_var_name_count (void *self, int * count)
 {
-  *count = BMI_HEAT_OUTPUT_VAR_NAME_COUNT;
+  *count = OUTPUT_VAR_NAME_COUNT;
   return BMI_SUCCESS;
 }
 
 
-int
-BMI_HEAT_Get_output_var_names (void *self, char ** names)
+static int
+Get_output_var_names (void *self, char ** names)
 {
   int i;
-  for (i=0; i<BMI_HEAT_OUTPUT_VAR_NAME_COUNT; i++) {
+  for (i=0; i<OUTPUT_VAR_NAME_COUNT; i++) {
     strncpy (names[i], output_var_names[i], BMI_MAX_VAR_NAME);
   }
   return BMI_SUCCESS;
 }
 
 
-int
-BMI_HEAT_Get_start_time (void *self, double * time)
+BMI_Model*
+Construct_heat_bmi(BMI_Model *model)
 {
-  if (time) {
-    *time = 0.;
-    return BMI_SUCCESS;
+  if (model) {
+    model->self = NULL;
+
+    model->Initialize = Initialize;
+    model->Update = Update;
+    model->Update_until = Update_until;
+    model->Update_frac = Update_frac;
+    model->Finalize = Finalize;
+    model->Run_model = NULL;
+
+    model->Get_component_name = Get_component_name;
+    model->Get_input_var_name_count = Get_input_var_name_count;
+    model->Get_output_var_name_count = Get_output_var_name_count;
+    model->Get_input_var_names = Get_input_var_names;
+    model->Get_output_var_names = Get_output_var_names;
+
+    model->Get_var_type = Get_var_type;
+    model->Get_var_units = Get_var_units;
+    model->Get_var_rank = Get_var_rank;
+    model->Get_var_size = Get_var_size;
+    model->Get_var_nbytes = Get_var_nbytes;
+    model->Get_current_time = Get_current_time;
+    model->Get_start_time = Get_start_time;
+    model->Get_end_time = Get_end_time;
+    model->Get_time_units = Get_time_units;
+    model->Get_time_step = Get_time_step;
+
+    model->Get_value = Get_value;
+    model->Get_value_ptr = Get_value_ptr;
+    model->Get_value_at_indices = Get_value_at_indices;
+
+    model->Set_value = Set_value;
+    model->Set_value_ptr = NULL;
+    model->Set_value_at_indices = Set_value_at_indices;
+
+    model->Get_grid_type = Get_grid_type;
+    model->Get_grid_shape = Get_grid_shape;
+    model->Get_grid_spacing = Get_grid_spacing;
+    model->Get_grid_origin = Get_grid_origin;
+
+    model->Get_grid_x = NULL;
+    model->Get_grid_y = NULL;
+    model->Get_grid_z = NULL;
   }
-  else {
-    return BMI_FAILURE;
-  }
+
+  return model;
 }
 
 
-int
-BMI_HEAT_Get_end_time (void *self, double * time)
-{
-  *time = ((HeatModel *)self)->t_end;
-  return BMI_SUCCESS;
-}
-
-
-int
-BMI_HEAT_Get_current_time (void *self, double * time)
-{
-  *time = ((HeatModel *)self)->t;
-  return BMI_SUCCESS;
-}
-
-
-int
-BMI_HEAT_Get_time_step (void *self, double * dt)
-{
-  *dt = ((HeatModel *)self)->dt;
-  return BMI_SUCCESS;
-}
-
-
-int
-BMI_HEAT_Get_time_units (void *self, char * units)
-{
-  strncpy (units, "-", BMI_MAX_UNITS_NAME);
-  return BMI_SUCCESS;
-}
