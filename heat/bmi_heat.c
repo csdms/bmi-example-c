@@ -3,9 +3,10 @@
 #include <string.h>
 #include <float.h>
 
+#include <bmi/bmi.h>
+
 #include "heat.h"
 #include "bmi_heat.h"
-#include "bmi.h"
 
 
 #define INPUT_VAR_NAME_COUNT 1
@@ -511,5 +512,3 @@ Construct_heat_bmi(BMI_Model *model)
 
   return model;
 }
-
-

@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "bmi.h"
+#include <bmi/bmi.h>
 
 BMI_Model* Construct_heat_bmi(BMI_Model *model);
 
