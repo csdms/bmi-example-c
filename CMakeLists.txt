@@ -4,6 +4,7 @@ project (bmi)
 
 set (CMAKE_C_FLAGS "-ansi -Wall -Wundef -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -O2")
 
+add_subdirectory (bmi)
 add_subdirectory (heat)
 add_subdirectory (testing)
 

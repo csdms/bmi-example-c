@@ -16,9 +16,6 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 set (bmi_heat_lib_SRCS bmi_heat.c heat.c)
 add_library (bmi_heatc ${bmi_heat_lib_SRCS} )
 
-set (bmi_lib_SRCS bmi.c)
-add_library (bmic ${bmi_lib_SRCS} )
-
 ########### Heat main ###############
 
 set (heat_sources main.c heat.c)
@@ -29,11 +26,7 @@ add_executable (heatc ${heat_sources})
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/heatc DESTINATION bin
   COMPONENT heat)
 install(TARGETS bmi_heatc DESTINATION lib COMPONENT heat)
-install(TARGETS bmic DESTINATION lib COMPONENT heat)
 install(FILES bmi_heat.h
-        DESTINATION include/heat
-        COMPONENT heat)
-install(FILES bmi.h
         DESTINATION include/heat
         COMPONENT heat)
 install(FILES heatc.pc DESTINATION lib/pkgconfig)
