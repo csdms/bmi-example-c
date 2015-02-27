@@ -4,6 +4,7 @@
 #include <float.h>
 
 #include "heat.h"
+#include "bmi_heat.h"
 #include "bmi.h"
 
 
@@ -80,8 +81,6 @@ Initialize (const char *file, void ** handle)
     self = heat_from_default ();
 
   *handle = (void *) self;
-
-  fprintf(stderr, "self is %d\n", self);
 
   return BMI_SUCCESS;
 }
@@ -468,46 +467,46 @@ Construct_heat_bmi(BMI_Model *model)
   if (model) {
     model->self = NULL;
 
-    model->Initialize = Initialize;
-    model->Update = Update;
-    model->Update_until = Update_until;
-    model->Update_frac = Update_frac;
-    model->Finalize = Finalize;
-    model->Run_model = NULL;
+    model->initialize = Initialize;
+    model->update = Update;
+    model->update_until = Update_until;
+    model->update_frac = Update_frac;
+    model->finalize = Finalize;
+    model->run_model = NULL;
 
-    model->Get_component_name = Get_component_name;
-    model->Get_input_var_name_count = Get_input_var_name_count;
-    model->Get_output_var_name_count = Get_output_var_name_count;
-    model->Get_input_var_names = Get_input_var_names;
-    model->Get_output_var_names = Get_output_var_names;
+    model->get_component_name = Get_component_name;
+    model->get_input_var_name_count = Get_input_var_name_count;
+    model->get_output_var_name_count = Get_output_var_name_count;
+    model->get_input_var_names = Get_input_var_names;
+    model->get_output_var_names = Get_output_var_names;
 
-    model->Get_var_type = Get_var_type;
-    model->Get_var_units = Get_var_units;
-    model->Get_var_rank = Get_var_rank;
-    model->Get_var_size = Get_var_size;
-    model->Get_var_nbytes = Get_var_nbytes;
-    model->Get_current_time = Get_current_time;
-    model->Get_start_time = Get_start_time;
-    model->Get_end_time = Get_end_time;
-    model->Get_time_units = Get_time_units;
-    model->Get_time_step = Get_time_step;
+    model->get_var_type = Get_var_type;
+    model->get_var_units = Get_var_units;
+    model->get_var_rank = Get_var_rank;
+    model->get_var_size = Get_var_size;
+    model->get_var_nbytes = Get_var_nbytes;
+    model->get_current_time = Get_current_time;
+    model->get_start_time = Get_start_time;
+    model->get_end_time = Get_end_time;
+    model->get_time_units = Get_time_units;
+    model->get_time_step = Get_time_step;
 
-    model->Get_value = Get_value;
-    model->Get_value_ptr = Get_value_ptr;
-    model->Get_value_at_indices = Get_value_at_indices;
+    model->get_value = Get_value;
+    model->get_value_ptr = Get_value_ptr;
+    model->get_value_at_indices = Get_value_at_indices;
 
-    model->Set_value = Set_value;
-    model->Set_value_ptr = NULL;
-    model->Set_value_at_indices = Set_value_at_indices;
+    model->set_value = Set_value;
+    model->set_value_ptr = NULL;
+    model->set_value_at_indices = Set_value_at_indices;
 
-    model->Get_grid_type = Get_grid_type;
-    model->Get_grid_shape = Get_grid_shape;
-    model->Get_grid_spacing = Get_grid_spacing;
-    model->Get_grid_origin = Get_grid_origin;
+    model->get_grid_type = Get_grid_type;
+    model->get_grid_shape = Get_grid_shape;
+    model->get_grid_spacing = Get_grid_spacing;
+    model->get_grid_origin = Get_grid_origin;
 
-    model->Get_grid_x = NULL;
-    model->Get_grid_y = NULL;
-    model->Get_grid_z = NULL;
+    model->get_grid_x = NULL;
+    model->get_grid_y = NULL;
+    model->get_grid_z = NULL;
   }
 
   return model;

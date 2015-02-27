@@ -16,55 +16,55 @@ extern "C" {
 typedef struct {
   void * self;
 
-  int (* Initialize)(const char *, void**);
-  int (* Update)(void*);
-  int (* Update_until)(void *, double);
-  int (* Update_frac)(void *, double);
-  int (* Finalize)(void *);
-  int (* Run_model)(void *);
+  int (* initialize)(const char *, void**);
+  int (* update)(void*);
+  int (* update_until)(void *, double);
+  int (* update_frac)(void *, double);
+  int (* finalize)(void *);
+  int (* run_model)(void *);
 
-  int (* Get_component_name)(void *, char *);
-  int (* Get_input_var_name_count)(void *, int *);
-  int (* Get_output_var_name_count)(void *, int *);
-  int (* Get_input_var_names)(void *, char **);
-  int (* Get_output_var_names)(void *, char **);
+  int (* get_component_name)(void *, char *);
+  int (* get_input_var_name_count)(void *, int *);
+  int (* get_output_var_name_count)(void *, int *);
+  int (* get_input_var_names)(void *, char **);
+  int (* get_output_var_names)(void *, char **);
 
-  int (* Get_var_type)(void *, const char *, char *);
-  int (* Get_var_units)(void *, const char *, char *);
-  int (* Get_var_rank)(void *, const char *, int *);
-  int (* Get_var_size)(void *, const char *, int *);
-  int (* Get_var_nbytes)(void *, const char *, int *);
-  int (* Get_current_time)(void *, double *);
-  int (* Get_start_time)(void *, double *);
-  int (* Get_end_time)(void *, double *);
-  int (* Get_time_units)(void *, char *);
-  int (* Get_time_step)(void *, double *);
+  int (* get_var_type)(void *, const char *, char *);
+  int (* get_var_units)(void *, const char *, char *);
+  int (* get_var_rank)(void *, const char *, int *);
+  int (* get_var_size)(void *, const char *, int *);
+  int (* get_var_nbytes)(void *, const char *, int *);
+  int (* get_current_time)(void *, double *);
+  int (* get_start_time)(void *, double *);
+  int (* get_end_time)(void *, double *);
+  int (* get_time_units)(void *, char *);
+  int (* get_time_step)(void *, double *);
 
   /* Variable getter and setter functions */
-  int (* Get_value)(void *, const char *, void *);
-  int (* Get_value_ptr)(void *, const char *, void **);
-  int (* Get_value_at_indices)(void *, const char *, void *, int *, int);
+  int (* get_value)(void *, const char *, void *);
+  int (* get_value_ptr)(void *, const char *, void **);
+  int (* get_value_at_indices)(void *, const char *, void *, int *, int);
 
-  int (* Set_value)(void *, const char *, void *);
-  int (* Set_value_ptr)(void *, const char *, void **);
-  int (* Set_value_at_indices)(void *, const char *, int *, int, void *);
+  int (* set_value)(void *, const char *, void *);
+  int (* set_value_ptr)(void *, const char *, void **);
+  int (* set_value_at_indices)(void *, const char *, int *, int, void *);
 
   /* Grid information functions */
-  int (* Get_grid_type)(void *, const char *, char *);
-  int (* Get_grid_shape)(void *, const char *, int *);
-  int (* Get_grid_spacing)(void *, const char *, double *);
-  int (* Get_grid_origin)(void *, const char *, double *);
+  int (* get_grid_type)(void *, const char *, char *);
+  int (* get_grid_shape)(void *, const char *, int *);
+  int (* get_grid_spacing)(void *, const char *, double *);
+  int (* get_grid_origin)(void *, const char *, double *);
 
-  int (* Get_grid_x)(void *, const char *, double *);
-  int (* Get_grid_y)(void *, const char *, double *);
-  int (* Get_grid_z)(void *, const char *, double *);
+  int (* get_grid_x)(void *, const char *, double *);
+  int (* get_grid_y)(void *, const char *, double *);
+  int (* get_grid_z)(void *, const char *, double *);
 
-  int (* Get_grid_cell_count)(void *, const char *, int *);
-  int (* Get_grid_point_count)(void *, const char *, int *);
-  int (* Get_grid_vertex_count)(void *, const char *, int *);
+  int (* get_grid_cell_count)(void *, const char *, int *);
+  int (* get_grid_point_count)(void *, const char *, int *);
+  int (* get_grid_vertex_count)(void *, const char *, int *);
 
-  int (* Get_grid_connectivity)(void *, const char *, int *);
-  int (* Get_grid_offset)(void *, const char *, int *);
+  int (* get_grid_connectivity)(void *, const char *, int *);
+  int (* get_grid_offset)(void *, const char *, int *);
 } BMI_Model;
 
 
