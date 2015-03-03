@@ -246,7 +246,7 @@ Get_grid_spacing (void *self, const char *name, double * spacing)
 {
   if (strcmp (name, "plate_surface__temperature") == 0) {
     spacing[0] = ((HeatModel *)self)->spacing[0];
-    spacing[1] = ((HeatModel *)self)->spacing[0];
+    spacing[1] = ((HeatModel *)self)->spacing[1];
   }
 
   return BMI_SUCCESS;
