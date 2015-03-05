@@ -26,13 +26,8 @@ static const char *input_var_names[INPUT_VAR_NAME_COUNT] = {
 static int
 Get_start_time (void *self, double * time)
 {
-  if (time) {
-    *time = 0.;
-    return BMI_SUCCESS;
-  }
-  else {
-    return BMI_FAILURE;
-  }
+  *time = 0.;
+  return BMI_SUCCESS;
 }
 
 
@@ -233,7 +228,6 @@ Get_grid_shape (void *self, const char *name, int * shape)
     shape[0] = ((HeatModel *)self)->shape[0];
     shape[1] = ((HeatModel *)self)->shape[1];
 
-  fprintf(stderr, "shape is %d x %d\n", shape[0], shape[1]);
   fflush(stderr);
   }
 
