@@ -73,7 +73,7 @@ main (void)
 void
 print_var_info (BMI_Model *model, const char *var)
 {
-  char type[2048];
+  char type[BMI_MAX_TYPE_NAME];
   char units[BMI_MAX_UNITS_NAME];
   int n_dims;
   int *shape;

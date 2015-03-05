@@ -154,7 +154,7 @@ static int
 Get_var_type (void *self, const char *name, char * type)
 {
   if (strcmp (name, "plate_surface__temperature") == 0) {
-    strncpy(type, "double", 2048);
+    strncpy(type, "double", BMI_MAX_TYPE_NAME);
     return BMI_SUCCESS;
   }
   else {
@@ -272,7 +272,7 @@ Get_grid_type (void *self, const char *name, char * type)
 
   {
     if (strcmp (name, "plate_surface__temperature") == 0) {
-      strncpy(type, "uniform_rectilinear", 2048);
+      strncpy(type, "uniform_rectilinear", BMI_MAX_TYPE_NAME);
       status = BMI_SUCCESS;
     }
     else {
