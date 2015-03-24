@@ -31,7 +31,7 @@ main (void)
     int *shape;
     int len = 0;
     int i;
-    int gr;id
+    int grid;
 
     BMI_Get_var_grid (model, "plate_surface__temperature", &grid);
     BMI_Get_grid_rank (model, grid, &n_dims);
@@ -96,7 +96,7 @@ print_var_values (void *model, const char *var_name)
   BMI_Get_grid_rank (model, grid, &n_dims);
   shape = (int*) malloc (sizeof (int)*n_dims);
 
-  BMI_Get_grid_shape (model, "plate_surface__temperature", shape);
+  BMI_Get_grid_shape (model, grid, shape);
   BMI_Get_value_ptr (model, var_name, (void**)(&var));
 
   fprintf (stdout, "Variable: %s\n", var_name);
