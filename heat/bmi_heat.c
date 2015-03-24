@@ -146,6 +146,20 @@ Finalize (void *self)
 
 
 static int
+Get_var_grid (void *self, const char *name, int * grid)
+{
+  if (strcmp (name, "plate_surface__temperature") == 0) {
+    *grid = 0;
+    return BMI_SUCCESS;
+  }
+  else {
+    *grid = -1;
+    return BMI_FAILURE;
+  }
+}
+
+
+static int
 Get_var_type (void *self, const char *name, char * type)
 {
   if (strcmp (name, "plate_surface__temperature") == 0) {
@@ -475,6 +489,7 @@ register_bmi_heat(BMI_Model *model)
     model->get_input_var_names = Get_input_var_names;
     model->get_output_var_names = Get_output_var_names;
 
+    model->get_var_rank = Get_var_rank;
     model->get_var_type = Get_var_type;
     model->get_var_units = Get_var_units;
     model->get_var_rank = Get_var_rank;
