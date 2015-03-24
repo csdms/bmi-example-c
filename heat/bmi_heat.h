@@ -7,7 +7,7 @@ extern "C" {
 
 #include <bmi/bmi.h>
 
-BMI_Model* Construct_heat_bmi(BMI_Model *model);
+BMI_Model* register_bmi_heat(BMI_Model *model);
 
 #if defined(__cplusplus)
 }
