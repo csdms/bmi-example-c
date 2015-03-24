@@ -188,9 +188,34 @@ Get_var_units (void *self, const char *name, char * units)
 
 
 static int
-Get_var_rank (void *self, const char *name, int * rank)
+Get_var_nbytes (void *self, const char *name, int * nbytes)
 {
-  if (strcmp (name, "plate_surface__temperature") == 0) {
+  int status = BMI_FAILURE;
+
+  {
+    int size = 0;
+    int grid;
+
+    *nbytes = -1;
+
+    if (Get_var_grid(self, name, &grid) == BMI_FAILURE)
+      return BMI_FAILURE;
+
+    if (Get_grid_size (self, grid, &size) == BMI_FAILURE)
+      return BMI_FAILURE;
+
+    *nbytes = sizeof (double) * size;
+    status = BMI_SUCCESS;
+  }
+
+  return status;
+}
+
+
+static int
+Get_grid_rank (void *self, int grid, int * rank)
+{
+  if (grid == 0) {
     *rank = 2;
     return BMI_SUCCESS;
   }
@@ -202,36 +227,16 @@ Get_var_rank (void *self, const char *name, int * rank)
 
 
 static int
-Get_var_size (void *self, const char *name, int * size)
+Get_grid_size (void *self, int grid, int * size)
 {
-  int status = BMI_FAILURE;
-
-  if (strcmp (name, "plate_surface__temperature") == 0) {
+  if (grid == 0) {
     *size = ((HeatModel *)self)->shape[0] * ((HeatModel *)self)->shape[1];
-    status = BMI_SUCCESS;
+    return BMI_SUCCESS;
   }
-
-  return status;
-}
-
-
-static int
-Get_var_nbytes (void *self, const char *name, int * nbytes)
-{
-  int status = BMI_FAILURE;
-
-  {
-    int size = 0;
-
-    status = Get_var_size (self, name, &size);
-    if (status == BMI_FAILURE)
-      return status;
-
-    *nbytes = sizeof (double) * size;
-    status = BMI_SUCCESS;
+  else {
+    *size = -1;
+    return BMI_FAILURE;
   }
-
-  return status;
 }
 
 
@@ -485,11 +490,9 @@ register_bmi_heat(BMI_Model *model)
     model->get_input_var_names = Get_input_var_names;
     model->get_output_var_names = Get_output_var_names;
 
-    model->get_var_rank = Get_var_rank;
+    model->get_var_grid = Get_var_grid;
     model->get_var_type = Get_var_type;
     model->get_var_units = Get_var_units;
-    model->get_var_rank = Get_var_rank;
-    model->get_var_size = Get_var_size;
     model->get_var_nbytes = Get_var_nbytes;
     model->get_current_time = Get_current_time;
     model->get_start_time = Get_start_time;
@@ -505,6 +508,8 @@ register_bmi_heat(BMI_Model *model)
     model->set_value_ptr = NULL;
     model->set_value_at_indices = Set_value_at_indices;
 
+    model->get_grid_size = Get_grid_size;
+    model->get_grid_rank = Get_grid_rank;
     model->get_grid_type = Get_grid_type;
     model->get_grid_shape = Get_grid_shape;
     model->get_grid_spacing = Get_grid_spacing;
