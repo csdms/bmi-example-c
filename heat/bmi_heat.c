@@ -146,73 +146,6 @@ Finalize (void *self)
 
 
 static int
-Get_var_grid (void *self, const char *name, int * grid)
-{
-  if (strcmp (name, "plate_surface__temperature") == 0) {
-    *grid = 0;
-    return BMI_SUCCESS;
-  }
-  else {
-    *grid = -1;
-    return BMI_FAILURE;
-  }
-}
-
-
-static int
-Get_var_type (void *self, const char *name, char * type)
-{
-  if (strcmp (name, "plate_surface__temperature") == 0) {
-    strncpy(type, "double", BMI_MAX_TYPE_NAME);
-    return BMI_SUCCESS;
-  }
-  else {
-    type[0] = '\0';
-    return BMI_FAILURE;
-  }
-}
-
-
-static int
-Get_var_units (void *self, const char *name, char * units)
-{
-  if (strcmp (name, "plate_surface__temperature") == 0) {
-    strncpy (units, "K", BMI_MAX_UNITS_NAME);
-    return BMI_SUCCESS;
-  }
-  else {
-    units[0] = '\0';
-    return BMI_FAILURE;
-  }
-}
-
-
-static int
-Get_var_nbytes (void *self, const char *name, int * nbytes)
-{
-  int status = BMI_FAILURE;
-
-  {
-    int size = 0;
-    int grid;
-
-    *nbytes = -1;
-
-    if (Get_var_grid(self, name, &grid) == BMI_FAILURE)
-      return BMI_FAILURE;
-
-    if (Get_grid_size (self, grid, &size) == BMI_FAILURE)
-      return BMI_FAILURE;
-
-    *nbytes = sizeof (double) * size;
-    status = BMI_SUCCESS;
-  }
-
-  return status;
-}
-
-
-static int
 Get_grid_rank (void *self, int grid, int * rank)
 {
   if (grid == 0) {
@@ -288,6 +221,73 @@ Get_grid_type (void *self, int grid, char * type)
   else {
     type[0] = '\0';
     status = BMI_FAILURE;
+  }
+
+  return status;
+}
+
+
+static int
+Get_var_grid (void *self, const char *name, int * grid)
+{
+  if (strcmp (name, "plate_surface__temperature") == 0) {
+    *grid = 0;
+    return BMI_SUCCESS;
+  }
+  else {
+    *grid = -1;
+    return BMI_FAILURE;
+  }
+}
+
+
+static int
+Get_var_type (void *self, const char *name, char * type)
+{
+  if (strcmp (name, "plate_surface__temperature") == 0) {
+    strncpy(type, "double", BMI_MAX_TYPE_NAME);
+    return BMI_SUCCESS;
+  }
+  else {
+    type[0] = '\0';
+    return BMI_FAILURE;
+  }
+}
+
+
+static int
+Get_var_units (void *self, const char *name, char * units)
+{
+  if (strcmp (name, "plate_surface__temperature") == 0) {
+    strncpy (units, "K", BMI_MAX_UNITS_NAME);
+    return BMI_SUCCESS;
+  }
+  else {
+    units[0] = '\0';
+    return BMI_FAILURE;
+  }
+}
+
+
+static int
+Get_var_nbytes (void *self, const char *name, int * nbytes)
+{
+  int status = BMI_FAILURE;
+
+  {
+    int size = 0;
+    int grid;
+
+    *nbytes = -1;
+
+    if (Get_var_grid(self, name, &grid) == BMI_FAILURE)
+      return BMI_FAILURE;
+
+    if (Get_grid_size (self, grid, &size) == BMI_FAILURE)
+      return BMI_FAILURE;
+
+    *nbytes = sizeof (double) * size;
+    status = BMI_SUCCESS;
   }
 
   return status;
