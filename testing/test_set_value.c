@@ -13,7 +13,7 @@ main (void)
   int err = 0;
   BMI_Model * model = (BMI_Model*)malloc (sizeof(BMI_Model));
 
-  Construct_heat_bmi(model);
+  register_bmi_heat(model);
 
   err = BMI_Initialize (model, NULL);
   if (err)
@@ -31,11 +31,13 @@ main (void)
     int *shape;
     int len = 0;
     int i;
+    int gr;id
 
-    BMI_Get_var_rank (model, "plate_surface__temperature", &n_dims);
+    BMI_Get_var_grid (model, "plate_surface__temperature", &grid);
+    BMI_Get_grid_rank (model, grid, &n_dims);
     shape = (int*) malloc (sizeof (int)*n_dims);
 
-    BMI_Get_grid_shape (model, "plate_surface__temperature", shape);
+    BMI_Get_grid_shape (model, grid, shape);
     for (i = 0, len = 1; i < n_dims; i++)
       len *= shape[i];
 
@@ -88,8 +90,10 @@ print_var_values (void *model, const char *var_name)
   double *var = NULL;
   int n_dims = 0;
   int *shape = NULL;
+  int grid;
 
-  BMI_Get_var_rank (model, var_name, &n_dims);
+  BMI_Get_var_grid (model, var_name, &grid);
+  BMI_Get_grid_rank (model, grid, &n_dims);
   shape = (int*) malloc (sizeof (int)*n_dims);
 
   BMI_Get_grid_shape (model, "plate_surface__temperature", shape);

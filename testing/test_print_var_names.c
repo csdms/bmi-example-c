@@ -11,7 +11,7 @@ main (void)
 {
   BMI_Model * model = (BMI_Model*)malloc (sizeof(BMI_Model));
 
-  Construct_heat_bmi(model);
+  register_bmi_heat(model);
 
   if (BMI_Initialize (model, NULL)!=0 || !model)
     return EXIT_FAILURE;

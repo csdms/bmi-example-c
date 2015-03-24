@@ -12,7 +12,7 @@ main (void)
 {
   BMI_Model *model = (BMI_Model*)malloc (sizeof(BMI_Model));
 
-  Construct_heat_bmi(model);
+  register_bmi_heat(model);
 
   BMI_Initialize (model, NULL);
 
@@ -79,18 +79,20 @@ print_var_info (BMI_Model *model, const char *var)
   int *shape;
   double *spacing;
   double *origin;
+  int grid;
 
+  BMI_Get_var_grid (model, var, &grid);
   BMI_Get_var_type (model, var, type);
   BMI_Get_var_units (model, var, units);
-  BMI_Get_var_rank (model, var, &n_dims);
+  BMI_Get_grid_rank (model, grid, &n_dims);
 
   shape = (int*) malloc (sizeof (int)*n_dims);
   spacing = (double*) malloc (sizeof (double)*n_dims);
   origin = (double*) malloc (sizeof (double)*n_dims);
 
-  BMI_Get_grid_shape (model, var, shape);
-  BMI_Get_grid_spacing (model, var, spacing);
-  BMI_Get_grid_origin (model, var, origin);
+  BMI_Get_grid_shape (model, grid, shape);
+  BMI_Get_grid_spacing (model, grid, spacing);
+  BMI_Get_grid_origin (model, grid, origin);
 
   fprintf (stdout, "\n");
   fprintf (stdout, "Variable info\n");

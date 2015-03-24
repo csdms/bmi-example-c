@@ -11,7 +11,7 @@ main (void)
   int status = BMI_SUCCESS;
   BMI_Model * model = (BMI_Model*)malloc (sizeof(BMI_Model));
 
-  Construct_heat_bmi(model);
+  register_bmi_heat(model);
 
   {
     fprintf (stdout, "Initializing... ");
