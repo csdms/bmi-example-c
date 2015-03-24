@@ -236,13 +236,11 @@ Get_var_nbytes (void *self, const char *name, int * nbytes)
 
 
 static int
-Get_grid_shape (void *self, const char *name, int * shape)
+Get_grid_shape (void *self, int grid, int * shape)
 {
-  if (strcmp (name, "plate_surface__temperature") == 0) {
+  if (grid == 0) {
     shape[0] = ((HeatModel *)self)->shape[0];
     shape[1] = ((HeatModel *)self)->shape[1];
-
-  fflush(stderr);
   }
 
   return BMI_SUCCESS;
@@ -250,9 +248,9 @@ Get_grid_shape (void *self, const char *name, int * shape)
 
 
 static int
-Get_grid_spacing (void *self, const char *name, double * spacing)
+Get_grid_spacing (void *self, int grid, double * spacing)
 {
-  if (strcmp (name, "plate_surface__temperature") == 0) {
+  if (grid == 0) {
     spacing[0] = ((HeatModel *)self)->spacing[0];
     spacing[1] = ((HeatModel *)self)->spacing[1];
   }
@@ -262,9 +260,9 @@ Get_grid_spacing (void *self, const char *name, double * spacing)
 
 
 static int
-Get_grid_origin (void *self, const char *name, double * origin)
+Get_grid_origin (void *self, int grid, double * origin)
 {
-  if (strcmp (name, "plate_surface__temperature") == 0) {
+  if (grid == 0) {
     origin[0] = 0.;
     origin[1] = 0.;
   }
@@ -274,19 +272,17 @@ Get_grid_origin (void *self, const char *name, double * origin)
 
 
 static int
-Get_grid_type (void *self, const char *name, char * type)
+Get_grid_type (void *self, int grid, char * type)
 {
   int status = BMI_FAILURE;
 
-  {
-    if (strcmp (name, "plate_surface__temperature") == 0) {
-      strncpy(type, "uniform_rectilinear", BMI_MAX_TYPE_NAME);
-      status = BMI_SUCCESS;
-    }
-    else {
-      type[0] = '\0';
-      status = BMI_FAILURE;
-    }
+  if (grid == 0) {
+    strncpy(type, "uniform_rectilinear", BMI_MAX_TYPE_NAME);
+    status = BMI_SUCCESS;
+  }
+  else {
+    type[0] = '\0';
+    status = BMI_FAILURE;
   }
 
   return status;
