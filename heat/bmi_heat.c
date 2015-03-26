@@ -256,6 +256,20 @@ Get_var_type (void *self, const char *name, char * type)
 
 
 static int
+Get_var_itemsize (void *self, const char *name, int * size)
+{
+  if (strcmp (name, "plate_surface__temperature") == 0) {
+    *size = sizeof(double);
+    return BMI_SUCCESS;
+  }
+  else {
+    *size = 0;
+    return BMI_FAILURE;
+  }
+}
+
+
+static int
 Get_var_units (void *self, const char *name, char * units)
 {
   if (strcmp (name, "plate_surface__temperature") == 0) {
@@ -492,6 +506,7 @@ register_bmi_heat(BMI_Model *model)
 
     model->get_var_grid = Get_var_grid;
     model->get_var_type = Get_var_type;
+    model->get_var_itemsize = Get_var_itemsize;
     model->get_var_units = Get_var_units;
     model->get_var_nbytes = Get_var_nbytes;
     model->get_current_time = Get_current_time;
