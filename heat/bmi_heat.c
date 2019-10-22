@@ -483,8 +483,8 @@ Get_output_var_names (void *self, char ** names)
 }
 
 
-BMI_Model*
-register_bmi_heat(BMI_Model *model)
+Bmi*
+register_bmi_heat(Bmi *model)
 {
   if (model) {
     model->self = NULL;

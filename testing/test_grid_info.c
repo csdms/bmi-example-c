@@ -5,12 +5,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void print_var_info (BMI_Model *model, const char *var);
+void print_var_info (Bmi *model, const char *var);
 
 int
 main (void)
 {
-  BMI_Model *model = (BMI_Model*)malloc (sizeof(BMI_Model));
+  Bmi *model = (Bmi*)malloc (sizeof(Bmi));
 
   register_bmi_heat(model);
 
@@ -71,7 +71,7 @@ main (void)
 }
 
 void
-print_var_info (BMI_Model *model, const char *var)
+print_var_info (Bmi *model, const char *var)
 {
   char type[BMI_MAX_TYPE_NAME];
   char units[BMI_MAX_UNITS_NAME];

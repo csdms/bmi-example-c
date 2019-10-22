@@ -11,7 +11,7 @@ main (void)
 {
   int i;
   const int n_steps = 10;
-  BMI_Model * model = (BMI_Model*)malloc (sizeof(BMI_Model));
+  Bmi * model = (Bmi*)malloc (sizeof(Bmi));
 
   register_bmi_heat(model);
 

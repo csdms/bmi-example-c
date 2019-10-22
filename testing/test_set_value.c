@@ -11,7 +11,7 @@ main (void)
 {
   double *new_vals = NULL;
   int err = 0;
-  BMI_Model * model = (BMI_Model*)malloc (sizeof(BMI_Model));
+  Bmi * model = (Bmi*)malloc (sizeof(Bmi));
 
   register_bmi_heat(model);
 
