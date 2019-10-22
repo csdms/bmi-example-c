@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include <bmi/bmi.h>
+#include <bmi.h>
 
 BMI_Model* register_bmi_heat(BMI_Model *model);
 

@@ -3,8 +3,6 @@
 #include <string.h>
 #include <float.h>
 
-#include <bmi/bmi.h>
-
 #include "heat.h"
 #include "bmi_heat.h"
 
