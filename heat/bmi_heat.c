@@ -90,25 +90,6 @@ Update (void *self)
 
 
 static int
-Update_frac (void *self, double f)
-{
-  if (f>0) {
-    double dt;
-
-    Get_time_step (self, &dt);
-
-    ((HeatModel *)self)->dt = f * dt;
-
-    Update (self);
-
-    ((HeatModel *)self)->dt = dt;
-  }
-
-  return BMI_SUCCESS;
-}
-
-
-static int
 Update_until (void *self, double t)
 {
   {
@@ -125,7 +106,7 @@ Update_until (void *self, double t)
         Update (self);
       }
 
-      Update_frac (self, n_steps - (int)n_steps);
+      /* Update_frac (self, n_steps - (int)n_steps); */
     }
   }
 
@@ -492,9 +473,7 @@ register_bmi_heat(Bmi *model)
     model->initialize = Initialize;
     model->update = Update;
     model->update_until = Update_until;
-    model->update_frac = Update_frac;
     model->finalize = Finalize;
-    model->run_model = NULL;
 
     model->get_component_name = Get_component_name;
     model->get_input_var_name_count = Get_input_var_name_count;
@@ -518,7 +497,6 @@ register_bmi_heat(Bmi *model)
     model->get_value_at_indices = Get_value_at_indices;
 
     model->set_value = Set_value;
-    model->set_value_ptr = NULL;
     model->set_value_at_indices = Set_value_at_indices;
 
     model->get_grid_size = Get_grid_size;
