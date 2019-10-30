@@ -22,4 +22,5 @@ install(TARGETS bmiheatc DESTINATION lib COMPONENT heat)
 install(FILES bmi_heat.h
         DESTINATION include
         COMPONENT heat)
-install(FILES heatc.pc DESTINATION lib/pkgconfig)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/heatc.pc
+        DESTINATION lib/pkgconfig)
