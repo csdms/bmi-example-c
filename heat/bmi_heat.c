@@ -518,6 +518,7 @@ register_bmi_heat(Bmi *model)
     model->get_grid_size = Get_grid_size;
     model->get_grid_rank = Get_grid_rank;
     model->get_grid_type = Get_grid_type;
+
     model->get_grid_shape = Get_grid_shape;
     model->get_grid_spacing = Get_grid_spacing;
     model->get_grid_origin = Get_grid_origin;
@@ -525,6 +526,14 @@ register_bmi_heat(Bmi *model)
     model->get_grid_x = NULL;
     model->get_grid_y = NULL;
     model->get_grid_z = NULL;
+
+    model->get_grid_node_count = NULL;
+    model->get_grid_edge_count = NULL;
+    model->get_grid_face_count = NULL;
+    model->get_grid_edge_nodes = NULL;
+    model->get_grid_face_edges = NULL;
+    model->get_grid_face_nodes = NULL;
+    model->get_grid_nodes_per_face = NULL;
   }
 
   return model;
