@@ -62,7 +62,7 @@ Get_current_time (void *self, double * time)
 
 
 static int
-Initialize (const char *file, void ** handle)
+Initialize (void *handle, char *file)
 {
   HeatModel * self = NULL;
 
@@ -74,7 +74,7 @@ Initialize (const char *file, void ** handle)
   else
     self = heat_from_default ();
 
-  *handle = (void *) self;
+  handle = (void *) self;
 
   return BMI_SUCCESS;
 }
