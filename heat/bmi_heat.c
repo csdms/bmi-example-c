@@ -288,6 +288,20 @@ Get_var_nbytes (void *self, const char *name, int * nbytes)
 
 
 static int
+Get_var_location (void *self, const char *name, char *location)
+{
+  if (strcmp (name, "plate_surface__temperature") == 0) {
+    strncpy (location, "node", BMI_MAX_UNITS_NAME);
+    return BMI_SUCCESS;
+  }
+  else {
+    location[0] = '\0';
+    return BMI_FAILURE;
+  }
+}
+
+
+static int
 Get_value_ptr (void *self, const char *name, void **dest)
 {
   int status = BMI_FAILURE;
@@ -486,6 +500,8 @@ register_bmi_heat(Bmi *model)
     model->get_var_itemsize = Get_var_itemsize;
     model->get_var_units = Get_var_units;
     model->get_var_nbytes = Get_var_nbytes;
+    model->Get_var_location = Get_var_location;
+
     model->get_current_time = Get_current_time;
     model->get_start_time = Get_start_time;
     model->get_end_time = Get_end_time;
