@@ -427,7 +427,7 @@ Get_component_name (void *self, char * name)
 
 
 static int
-Get_input_var_name_count (void *self, int * count)
+Get_input_item_count (void *self, int * count)
 {
   *count = INPUT_VAR_NAME_COUNT;
   return BMI_SUCCESS;
@@ -446,7 +446,7 @@ Get_input_var_names (void *self, char ** names)
 
 
 static int
-Get_output_var_name_count (void *self, int * count)
+Get_output_item_count (void *self, int * count)
 {
   *count = OUTPUT_VAR_NAME_COUNT;
   return BMI_SUCCESS;
@@ -476,8 +476,8 @@ register_bmi_heat(Bmi *model)
     model->finalize = Finalize;
 
     model->get_component_name = Get_component_name;
-    model->get_input_var_name_count = Get_input_var_name_count;
-    model->get_output_var_name_count = Get_output_var_name_count;
+    model->get_input_item_count = Get_input_item_count;
+    model->get_output_item_count = Get_output_item_count;
     model->get_input_var_names = Get_input_var_names;
     model->get_output_var_names = Get_output_var_names;
 
