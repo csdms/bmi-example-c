@@ -1,17 +1,10 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.0)
 
-project (heat)
-
-set (HEAT_VERSION 0.1)
-
+set (HEAT_VERSION 0.2)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/heatc.pc.cmake
-                ${CMAKE_CURRENT_SOURCE_DIR}/heatc.pc)
+                ${CMAKE_BINARY_DIR}/heat/heatc.pc)
 
 set (BUILD_SHARED_LIBS ON)
-
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/.. )
-
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 
 set (bmi_heat_lib_SRCS bmi_heat.c heat.c)
 add_library (bmiheatc ${bmi_heat_lib_SRCS} )
