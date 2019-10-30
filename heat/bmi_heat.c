@@ -500,7 +500,7 @@ register_bmi_heat(Bmi *model)
     model->get_var_itemsize = Get_var_itemsize;
     model->get_var_units = Get_var_units;
     model->get_var_nbytes = Get_var_nbytes;
-    model->Get_var_location = Get_var_location;
+    model->get_var_location = Get_var_location;
 
     model->get_current_time = Get_current_time;
     model->get_start_time = Get_start_time;
