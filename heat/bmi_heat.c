@@ -101,12 +101,16 @@ Update_until (void *self, double t)
 
     {
       int n;
+      double frac;
       const double n_steps = (t - now) / dt;
       for (n=0; n<(int)n_steps; n++) {
         Update (self);
       }
 
-      /* Update_frac (self, n_steps - (int)n_steps); */
+      frac = n_steps - (int)n_steps;
+      ((HeatModel *)self)->dt = frac * dt;
+      Update (self);
+      ((HeatModel *)self)->dt = dt;
     }
   }
 
