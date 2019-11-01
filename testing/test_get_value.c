@@ -1,10 +1,10 @@
-#include <heat/bmi_heat.h>
-#include <bmi/bmilib.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 
-void print_var_values (void *model, const char *var_name);
+#include <bmi_heat.h>
+
+
+void print_var_values(Bmi *model, const char *var_name);
 
 int
 main (void)
@@ -15,11 +15,11 @@ main (void)
 
   register_bmi_heat(model);
 
-  BMI_Initialize (model, NULL);
+  model->initialize(model, NULL);
 
   {
     char name[BMI_MAX_COMPONENT_NAME];
-    BMI_Get_component_name (model, name);
+    model->get_component_name(model->self, name);
     fprintf (stdout, "%s\n", name);
   }
 
@@ -29,14 +29,14 @@ main (void)
     fprintf (stdout, "==============\n");
     print_var_values (model, "plate_surface__temperature");
 
-    BMI_Update (model);
+    model->update(model->self);
   }
 
   fprintf (stdout, "Values at time %d\n", i);
   fprintf (stdout, "==============\n");
   print_var_values (model, "plate_surface__temperature");
 
-  BMI_Finalize (model);
+  model->finalize(model);
 
   free (model);
 
@@ -44,7 +44,7 @@ main (void)
 }
 
 void
-print_var_values (void *model, const char *var_name)
+print_var_values(Bmi *model, const char *var_name)
 {
   double *var = NULL;
   int len;
@@ -52,13 +52,13 @@ print_var_values (void *model, const char *var_name)
   int *shape;
   int grid;
 
-  BMI_Get_var_grid (model, var_name, &grid);
+  model->get_var_grid(model->self, var_name, &grid);
 
-  BMI_Get_grid_rank (model, grid, &rank);
+  model->get_grid_rank(model->self, grid, &rank);
   fprintf (stderr, "rank = %d\n", rank);
   shape = (int*) malloc (sizeof (int) * rank);
 
-  BMI_Get_grid_shape (model, grid, shape);
+  model->get_grid_shape(model->self, grid, shape);
   fprintf (stderr, "shape = %d x %d\n", shape[0], shape[1]);
 
   {
@@ -69,7 +69,7 @@ print_var_values (void *model, const char *var_name)
 
   var = (double*) malloc (sizeof (double)*len);
 
-  BMI_Get_value (model, var_name, var);
+  model->get_value(model->self, var_name, var);
 
   fprintf (stdout, "Variable: %s\n", var_name);
   fprintf (stdout, "================\n");

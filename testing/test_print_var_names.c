@@ -24,7 +24,7 @@ main (void)
 
   print_var_names (model);
 
-  if (model->finalize(model->self) != BMI_SUCCESS)
+  if (model->finalize(model) != BMI_SUCCESS)
     return BMI_FAILURE;
 
   free (model);
