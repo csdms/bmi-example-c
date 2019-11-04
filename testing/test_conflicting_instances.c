@@ -13,12 +13,12 @@ main (void)
   register_bmi_heat(model1);
   register_bmi_heat(model2);
 
-  if (model1->initialize(model1, NULL) != BMI_SUCCESS || !model1)
+  if (model1->initialize(model1->self, NULL) != BMI_SUCCESS || !model1)
     return BMI_FAILURE;
   else
     fprintf(stdout, "Model 1 initialized\n");
 
-  if (model2->initialize(model2, NULL) != BMI_SUCCESS || !model2)
+  if (model2->initialize(model2->self, NULL) != BMI_SUCCESS || !model2)
     return BMI_FAILURE;
   else
     fprintf(stdout, "Model 2 initialized\n");
@@ -59,12 +59,12 @@ main (void)
     fprintf (stdout, "\n");
   }
 
-  if (model1->finalize(model1) != BMI_SUCCESS)
+  if (model1->finalize(model1->self) != BMI_SUCCESS)
     return BMI_FAILURE;
   else
     fprintf(stdout, "Model 1 finalized\n");
 
-  if (model2->finalize(model2) != BMI_SUCCESS)
+  if (model2->finalize(model2->self) != BMI_SUCCESS)
     return BMI_FAILURE;
   else
     fprintf(stdout, "Model 2 finalized\n");

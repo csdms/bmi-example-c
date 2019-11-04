@@ -15,7 +15,7 @@ main (void)
 
   register_bmi_heat(model);
 
-  err = model->initialize(model, NULL);
+  err = model->initialize(model->self, NULL);
   if (err)
     return EXIT_FAILURE;
 
@@ -77,7 +77,7 @@ main (void)
 
   free (new_vals);
 
-  model->finalize(model);
+  model->finalize(model->self);
 
   free (model);
 

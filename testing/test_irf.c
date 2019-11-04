@@ -17,7 +17,7 @@ main (void)
     fprintf (stdout, "Initializing... ");
     fflush(stdout);
 
-    status = model->initialize(model, NULL);
+    status = model->initialize(model->self, NULL);
     if (status == BMI_FAILURE)
       return BMI_FAILURE;
 
@@ -82,7 +82,7 @@ main (void)
 
   fprintf (stdout, "Finalizing... ");
 
-  status = model->finalize(model);
+  status = model->finalize(model->self);
   if (status == BMI_FAILURE)
     return BMI_FAILURE;
 

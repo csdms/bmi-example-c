@@ -13,7 +13,7 @@ main (void)
 
   register_bmi_heat(model);
 
-  if (model->initialize(model, NULL) != BMI_SUCCESS || !model)
+  if (model->initialize(model->self, NULL) != BMI_SUCCESS || !model)
     return BMI_FAILURE;
 
   {
@@ -24,7 +24,7 @@ main (void)
 
   print_var_names (model);
 
-  if (model->finalize(model) != BMI_SUCCESS)
+  if (model->finalize(model->self) != BMI_SUCCESS)
     return BMI_FAILURE;
 
   free (model);

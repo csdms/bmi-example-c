@@ -15,7 +15,7 @@ main (void)
 
   register_bmi_heat(model);
 
-  model->initialize(model, NULL);
+  model->initialize(model->self, NULL);
 
   {
     char name[BMI_MAX_COMPONENT_NAME];
@@ -36,7 +36,7 @@ main (void)
   fprintf (stdout, "==============\n");
   print_var_values (model, "plate_surface__temperature");
 
-  model->finalize(model);
+  model->finalize(model->self);
 
   free (model);
 

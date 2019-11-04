@@ -13,7 +13,7 @@ main (void)
 
   register_bmi_heat(model);
 
-  model->initialize(model, NULL);
+  model->initialize(model->self, NULL);
 
   {
     char name[BMI_MAX_COMPONENT_NAME];
@@ -62,7 +62,7 @@ main (void)
     free (names);
   }
 
-  model->finalize(model);
+  model->finalize(model->self);
 
   free (model);
 
