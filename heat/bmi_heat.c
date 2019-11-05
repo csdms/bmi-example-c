@@ -62,19 +62,19 @@ Get_current_time (void *self, double * time)
 
 
 static int
-Initialize (void *handle, char *file)
+Initialize (void *self, char *file)
 {
-  HeatModel * self = NULL;
+  HeatModel *heat;
 
-  if (!handle)
+  if (!self)
     return BMI_FAILURE;
+  else
+    heat = (HeatModel *) self;
 
   if (file)
-    self = heat_from_input_file (file);
+    heat_from_input_file(&heat, file);
   else
-    self = heat_from_default ();
-
-  handle = (void *) self;
+    heat_from_default(&heat);
 
   return BMI_SUCCESS;
 }
