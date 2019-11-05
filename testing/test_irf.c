@@ -1,25 +1,26 @@
-#include <heat/bmi_heat.h>
-#include <bmi/bmilib.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+
+#include <bmi_heat.h>
+
 
 int
 main (void)
 {
   int status = BMI_SUCCESS;
-  BMI_Model * model = (BMI_Model*)malloc (sizeof(BMI_Model));
+  Bmi * model = (Bmi*)malloc (sizeof(Bmi));
 
   register_bmi_heat(model);
+  model->self = new_bmi_heat();
 
   {
     fprintf (stdout, "Initializing... ");
     fflush(stdout);
 
-    status = BMI_Initialize (model, NULL);
+    status = model->initialize(model->self, NULL);
     if (status == BMI_FAILURE)
-      return EXIT_FAILURE;
+      return BMI_FAILURE;
 
     fprintf (stdout, "PASS\n");
   }
@@ -27,9 +28,9 @@ main (void)
   {
     char name[BMI_MAX_COMPONENT_NAME];
 
-    status = BMI_Get_component_name (model, name);
+    status = model->get_component_name(model->self, name);
     if (status == BMI_FAILURE)
-      return EXIT_FAILURE;
+      return BMI_FAILURE;
 
     fprintf (stdout, "%s\n", name);
   }
@@ -40,55 +41,55 @@ main (void)
     double time;
     double dt;
 
-    status = BMI_Get_time_step(model, &dt);
+    status = model->get_time_step(model->self, &dt);
     if (status == BMI_FAILURE)
-      return EXIT_FAILURE;
+      return BMI_FAILURE;
 
     for (i = 0; i < n_steps; i++)
     {
       fprintf (stdout, "Running until t = %d... ", i+1);
 
-      status = BMI_Update (model);
+      status = model->update(model->self);
       if (status == BMI_FAILURE)
-        return EXIT_FAILURE;
+        return BMI_FAILURE;
       
-      status = BMI_Get_current_time (model, &time);
+      status = model->get_current_time(model->self, &time);
       if (status == BMI_FAILURE)
-        return EXIT_FAILURE;
+        return BMI_FAILURE;
 
       if (fabs (time / dt - (i + 1)) < 1e-6)
         fprintf (stdout, "PASS\n");
       else
-        return EXIT_FAILURE;
+        return BMI_FAILURE;
     }
 
     fprintf (stdout, "Running until t = %f... ", 1000.5);
 
-    status = BMI_Update_until (model, 1000.5);
+    status = model->update_until(model->self, 1000.5);
     if (status == BMI_FAILURE)
-      return EXIT_FAILURE;
+      return BMI_FAILURE;
 
-    status = BMI_Get_current_time (model, &time);
+    status = model->get_current_time(model->self, &time);
     if (status == BMI_FAILURE)
-      return EXIT_FAILURE;
+      return BMI_FAILURE;
 
     if (fabs (time-1000.5) < 1e-6)
       fprintf (stdout, "PASS\n");
     else {
       fprintf (stdout, "%f\n", time);
-      return EXIT_FAILURE;
+      return BMI_FAILURE;
     }
   }
 
   fprintf (stdout, "Finalizing... ");
 
-  status = BMI_Finalize (model);
+  status = model->finalize(model->self);
   if (status == BMI_FAILURE)
-    return EXIT_FAILURE;
+    return BMI_FAILURE;
 
   fprintf (stdout, "PASS\n");
 
   free (model);
 
-  return EXIT_SUCCESS;
+  return BMI_SUCCESS;
 }

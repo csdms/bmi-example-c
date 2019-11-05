@@ -1,20 +1,13 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.0)
 
-project (heat)
-
-set (HEAT_VERSION 0.1)
-
+set (HEAT_VERSION 0.2)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/heatc.pc.cmake
-                ${CMAKE_CURRENT_SOURCE_DIR}/heatc.pc)
+                ${CMAKE_BINARY_DIR}/heat/heatc.pc)
 
 set (BUILD_SHARED_LIBS ON)
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/.. )
-
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
-
 set (bmi_heat_lib_SRCS bmi_heat.c heat.c)
-add_library (bmi_heatc ${bmi_heat_lib_SRCS} )
+add_library (bmiheatc ${bmi_heat_lib_SRCS} )
 
 ########### Heat main ###############
 
@@ -25,9 +18,9 @@ add_executable (heatc ${heat_sources})
 
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/heatc DESTINATION bin
   COMPONENT heat)
-install(TARGETS bmi_heatc DESTINATION lib COMPONENT heat)
+install(TARGETS bmiheatc DESTINATION lib COMPONENT heat)
 install(FILES bmi_heat.h
-        DESTINATION include/heat
+        DESTINATION include
         COMPONENT heat)
-install(FILES heatc.pc DESTINATION lib/pkgconfig)
-
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/heatc.pc
+        DESTINATION lib/pkgconfig)

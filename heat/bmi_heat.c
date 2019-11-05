@@ -3,8 +3,6 @@
 #include <string.h>
 #include <float.h>
 
-#include <bmi/bmi.h>
-
 #include "heat.h"
 #include "bmi_heat.h"
 
@@ -64,19 +62,19 @@ Get_current_time (void *self, double * time)
 
 
 static int
-Initialize (const char *file, void ** handle)
+Initialize (void *self, char *file)
 {
-  HeatModel * self = NULL;
+  HeatModel *heat;
 
-  if (!handle)
+  if (!self)
     return BMI_FAILURE;
+  else
+    heat = (HeatModel *) self;
 
   if (file)
-    self = heat_from_input_file (file);
+    heat_from_input_file(&heat, file);
   else
-    self = heat_from_default ();
-
-  *handle = (void *) self;
+    heat_from_default(&heat);
 
   return BMI_SUCCESS;
 }
@@ -86,25 +84,6 @@ static int
 Update (void *self)
 {
   heat_advance_in_time ((HeatModel *) self);
-
-  return BMI_SUCCESS;
-}
-
-
-static int
-Update_frac (void *self, double f)
-{
-  if (f>0) {
-    double dt;
-
-    Get_time_step (self, &dt);
-
-    ((HeatModel *)self)->dt = f * dt;
-
-    Update (self);
-
-    ((HeatModel *)self)->dt = dt;
-  }
 
   return BMI_SUCCESS;
 }
@@ -122,12 +101,16 @@ Update_until (void *self, double t)
 
     {
       int n;
+      double frac;
       const double n_steps = (t - now) / dt;
       for (n=0; n<(int)n_steps; n++) {
         Update (self);
       }
 
-      Update_frac (self, n_steps - (int)n_steps);
+      frac = n_steps - (int)n_steps;
+      ((HeatModel *)self)->dt = frac * dt;
+      Update (self);
+      ((HeatModel *)self)->dt = dt;
     }
   }
 
@@ -309,6 +292,20 @@ Get_var_nbytes (void *self, const char *name, int * nbytes)
 
 
 static int
+Get_var_location (void *self, const char *name, char *location)
+{
+  if (strcmp (name, "plate_surface__temperature") == 0) {
+    strncpy (location, "node", BMI_MAX_UNITS_NAME);
+    return BMI_SUCCESS;
+  }
+  else {
+    location[0] = '\0';
+    return BMI_FAILURE;
+  }
+}
+
+
+static int
 Get_value_ptr (void *self, const char *name, void **dest)
 {
   int status = BMI_FAILURE;
@@ -448,7 +445,7 @@ Get_component_name (void *self, char * name)
 
 
 static int
-Get_input_var_name_count (void *self, int * count)
+Get_input_item_count (void *self, int * count)
 {
   *count = INPUT_VAR_NAME_COUNT;
   return BMI_SUCCESS;
@@ -467,7 +464,7 @@ Get_input_var_names (void *self, char ** names)
 
 
 static int
-Get_output_var_name_count (void *self, int * count)
+Get_output_item_count (void *self, int * count)
 {
   *count = OUTPUT_VAR_NAME_COUNT;
   return BMI_SUCCESS;
@@ -485,8 +482,18 @@ Get_output_var_names (void *self, char ** names)
 }
 
 
-BMI_Model*
-register_bmi_heat(BMI_Model *model)
+HeatModel *
+new_bmi_heat()
+{
+  HeatModel *self;
+
+  self = (HeatModel*) malloc(sizeof(HeatModel));
+  return self;
+}
+
+
+Bmi*
+register_bmi_heat(Bmi *model)
 {
   if (model) {
     model->self = NULL;
@@ -494,13 +501,11 @@ register_bmi_heat(BMI_Model *model)
     model->initialize = Initialize;
     model->update = Update;
     model->update_until = Update_until;
-    model->update_frac = Update_frac;
     model->finalize = Finalize;
-    model->run_model = NULL;
 
     model->get_component_name = Get_component_name;
-    model->get_input_var_name_count = Get_input_var_name_count;
-    model->get_output_var_name_count = Get_output_var_name_count;
+    model->get_input_item_count = Get_input_item_count;
+    model->get_output_item_count = Get_output_item_count;
     model->get_input_var_names = Get_input_var_names;
     model->get_output_var_names = Get_output_var_names;
 
@@ -509,6 +514,8 @@ register_bmi_heat(BMI_Model *model)
     model->get_var_itemsize = Get_var_itemsize;
     model->get_var_units = Get_var_units;
     model->get_var_nbytes = Get_var_nbytes;
+    model->get_var_location = Get_var_location;
+
     model->get_current_time = Get_current_time;
     model->get_start_time = Get_start_time;
     model->get_end_time = Get_end_time;
@@ -520,12 +527,12 @@ register_bmi_heat(BMI_Model *model)
     model->get_value_at_indices = Get_value_at_indices;
 
     model->set_value = Set_value;
-    model->set_value_ptr = NULL;
     model->set_value_at_indices = Set_value_at_indices;
 
     model->get_grid_size = Get_grid_size;
     model->get_grid_rank = Get_grid_rank;
     model->get_grid_type = Get_grid_type;
+
     model->get_grid_shape = Get_grid_shape;
     model->get_grid_spacing = Get_grid_spacing;
     model->get_grid_origin = Get_grid_origin;
@@ -533,6 +540,14 @@ register_bmi_heat(BMI_Model *model)
     model->get_grid_x = NULL;
     model->get_grid_y = NULL;
     model->get_grid_z = NULL;
+
+    model->get_grid_node_count = NULL;
+    model->get_grid_edge_count = NULL;
+    model->get_grid_face_count = NULL;
+    model->get_grid_edge_nodes = NULL;
+    model->get_grid_face_edges = NULL;
+    model->get_grid_face_nodes = NULL;
+    model->get_grid_nodes_per_face = NULL;
   }
 
   return model;

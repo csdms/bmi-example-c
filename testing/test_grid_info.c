@@ -1,24 +1,24 @@
-#include <heat/bmi_heat.h>
-#include <bmi/bmilib.h>
-#include <heat/heat.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 
-void print_var_info (BMI_Model *model, const char *var);
+#include <bmi_heat.h>
+
+
+void print_var_info (Bmi *model, const char *var);
 
 int
 main (void)
 {
-  BMI_Model *model = (BMI_Model*)malloc (sizeof(BMI_Model));
+  Bmi *model = (Bmi*)malloc (sizeof(Bmi));
 
   register_bmi_heat(model);
+  model->self = new_bmi_heat();
 
-  BMI_Initialize (model, NULL);
+  model->initialize(model->self, NULL);
 
   {
     char name[BMI_MAX_COMPONENT_NAME];
-    BMI_Get_component_name (model, name);
+    model->get_component_name(model->self, name);
     fprintf (stdout, "%s\n", name);
   }
 
@@ -27,13 +27,13 @@ main (void)
     char **names = NULL;
     int i;
 
-    BMI_Get_input_var_name_count(model, &n_names);
+    model->get_input_item_count(model->self, &n_names);
 
     names = (char**) malloc (sizeof(char*) * n_names);
     for (i = 0; i<n_names; i++)
       names[i] = (char*) malloc (sizeof (char) * BMI_MAX_VAR_NAME);
 
-    BMI_Get_input_var_names (model, names);
+    model->get_input_var_names(model->self, names);
     for (i = 0; i<n_names; i++)
       print_var_info (model, names[i]);
 
@@ -47,13 +47,13 @@ main (void)
     char **names = NULL;
     int i;
 
-    BMI_Get_output_var_name_count(model, &n_names);
+    model->get_output_item_count(model->self, &n_names);
 
     names = (char**) malloc (sizeof(char*) * n_names);
     for (i = 0; i<n_names; i++)
       names[i] = (char*) malloc (sizeof (char) * BMI_MAX_VAR_NAME);
 
-    BMI_Get_output_var_names (model, names);
+    model->get_output_var_names(model->self, names);
     fprintf(stdout, "no names is %d\n", n_names); fflush(stdout);
     for (i = 0; i<n_names; i++)
       print_var_info (model, names[i]);
@@ -63,7 +63,7 @@ main (void)
     free (names);
   }
 
-  BMI_Finalize (model);
+  model->finalize(model->self);
 
   free (model);
 
@@ -71,7 +71,7 @@ main (void)
 }
 
 void
-print_var_info (BMI_Model *model, const char *var)
+print_var_info (Bmi *model, const char *var)
 {
   char type[BMI_MAX_TYPE_NAME];
   char units[BMI_MAX_UNITS_NAME];
@@ -81,18 +81,18 @@ print_var_info (BMI_Model *model, const char *var)
   double *origin;
   int grid;
 
-  BMI_Get_var_grid (model, var, &grid);
-  BMI_Get_var_type (model, var, type);
-  BMI_Get_var_units (model, var, units);
-  BMI_Get_grid_rank (model, grid, &n_dims);
+  model->get_var_grid(model->self, var, &grid);
+  model->get_var_type(model->self, var, type);
+  model->get_var_units(model->self, var, units);
+  model->get_grid_rank(model->self, grid, &n_dims);
 
   shape = (int*) malloc (sizeof (int)*n_dims);
   spacing = (double*) malloc (sizeof (double)*n_dims);
   origin = (double*) malloc (sizeof (double)*n_dims);
 
-  BMI_Get_grid_shape (model, grid, shape);
-  BMI_Get_grid_spacing (model, grid, spacing);
-  BMI_Get_grid_origin (model, grid, origin);
+  model->get_grid_shape(model->self, grid, shape);
+  model->get_grid_spacing(model->self, grid, spacing);
+  model->get_grid_origin(model->self, grid, origin);
 
   fprintf (stdout, "\n");
   fprintf (stdout, "Variable info\n");

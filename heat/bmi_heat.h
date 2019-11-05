@@ -5,9 +5,11 @@
 extern "C" {
 #endif
 
-#include <bmi/bmi.h>
+#include <bmi.h>
+#include "heat.h"
 
-BMI_Model* register_bmi_heat(BMI_Model *model);
+Bmi* register_bmi_heat(Bmi *model);
+HeatModel* new_bmi_heat(void);
 
 #if defined(__cplusplus)
 }
