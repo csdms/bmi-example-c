@@ -482,6 +482,16 @@ Get_output_var_names (void *self, char ** names)
 }
 
 
+HeatModel *
+new_bmi_heat()
+{
+  HeatModel *self;
+
+  self = (HeatModel*) malloc(sizeof(HeatModel));
+  return self;
+}
+
+
 Bmi*
 register_bmi_heat(Bmi *model)
 {
