@@ -20,8 +20,8 @@ typedef struct {
 } HeatModel;
 
 
-extern HeatModel * heat_from_input_file (const char * filename);
-extern HeatModel * heat_from_default (void);
+extern void heat_from_input_file (HeatModel **heat, const char *filename);
+extern void heat_from_default (HeatModel **heat);
 extern int heat_advance_in_time (HeatModel * self);
 extern int heat_solve_2d (double ** z, int shape[2], double spacing[2],
     double alpha, double dt, double ** out);

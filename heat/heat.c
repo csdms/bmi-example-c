@@ -11,10 +11,15 @@
 int initialize_arrays (HeatModel *self);
 
 
-HeatModel *
-heat_from_input_file (const char * filename)
+void
+heat_from_input_file (HeatModel **heat, const char * filename)
 {
   HeatModel * self = NULL;
+
+  if (*heat == NULL)
+    *heat = (HeatModel*) malloc (sizeof(HeatModel));
+
+  self = *heat;
 
   {
     FILE *fp = NULL;
@@ -24,11 +29,6 @@ heat_from_input_file (const char * filename)
     int n_y = 0;
 
     fp = fopen (filename, "r");
-    if (!fp)
-      return NULL;
-    else
-      self = (HeatModel*) malloc (sizeof(HeatModel));
-
     fscanf (fp, "%lf, %lf, %d, %d", &alpha, &t_end, &n_x, &n_y);
 
     self->dt = 1. / (4. * alpha);
@@ -42,14 +42,18 @@ heat_from_input_file (const char * filename)
   self->spacing[1] = 1.;
 
   initialize_arrays (self);
-
-  return self;
 }
 
-HeatModel *
-heat_from_default (void)
+
+void
+heat_from_default (HeatModel **heat)
 {
-  HeatModel * self = (HeatModel*) malloc (sizeof(HeatModel));
+  HeatModel * self;
+
+  if (*heat == NULL)
+    *heat = (HeatModel*) malloc (sizeof(HeatModel));
+
+  self = *heat;
 
   if (self) {
     self->alpha = 1.;
@@ -60,12 +64,8 @@ heat_from_default (void)
     self->spacing[1] = 1.;
     self->dt = 1. / (4. * self->alpha);
   }
-  else
-    return NULL;
 
   initialize_arrays (self);
-
-  return self;
 }
 
 

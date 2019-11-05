@@ -5,8 +5,10 @@
 int
 main(void)
 {
-  HeatModel * p = heat_from_default ();
+  HeatModel * p = NULL;
   int i, j, t;
+
+  heat_from_default (&p);
 
   for (t=0; t<10; t++) {
     heat_advance_in_time (p);
