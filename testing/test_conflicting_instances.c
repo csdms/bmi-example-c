@@ -12,6 +12,8 @@ main (void)
 
   register_bmi_heat(model1);
   register_bmi_heat(model2);
+  model1->self = new_bmi_heat();
+  model2->self = new_bmi_heat();
 
   if (model1->initialize(model1->self, NULL) != BMI_SUCCESS || !model1)
     return BMI_FAILURE;

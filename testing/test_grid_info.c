@@ -12,6 +12,7 @@ main (void)
   Bmi *model = (Bmi*)malloc (sizeof(Bmi));
 
   register_bmi_heat(model);
+  model->self = new_bmi_heat();
 
   model->initialize(model->self, NULL);
 

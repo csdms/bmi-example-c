@@ -20,6 +20,7 @@ main (void)
     for (i = 0; i < n_steps; i++)
     {
       fprintf (stdout, "Reinitialize %d\n", i+1);
+      model->self = new_bmi_heat();
 
       fprintf (stdout, "Initializing... ");
       status = model->initialize(model->self, NULL);
