@@ -17,7 +17,8 @@ add_executable (heatc ${heat_sources})
 
 ########### Install files ###############
 
-install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/heatc DESTINATION bin
+install(TARGETS heatc
+  RUNTIME DESTINATION bin
   COMPONENT heat)
 install(TARGETS bmiheatc
   LIBRARY DESTINATION lib
