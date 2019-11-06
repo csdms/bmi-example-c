@@ -1,3 +1,7 @@
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -108,7 +112,7 @@ initialize_arrays (HeatModel *self)
       self->z[0][i] = 0.;
       self->z[n_rows-1][i] = top_x*top_x*.25 - (i-top_x*.5) * (i-top_x*.5);
     }
-    
+
     memcpy (self->temp_z[0], self->z[0], sizeof (double) * n_elements);
   }
   else
