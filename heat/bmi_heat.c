@@ -393,7 +393,7 @@ Set_value (void *self, const char *name, void *array)
     status = Get_value_ptr (self, name, &dest);
     if (status == BMI_FAILURE)
       return status;
-    
+
     status = Get_var_nbytes (self, name, &nbytes);
     if (status == BMI_FAILURE)
       return status;
@@ -483,7 +483,7 @@ Get_output_var_names (void *self, char ** names)
 
 
 HeatModel *
-new_bmi_heat()
+new_bmi_heat(void)
 {
   HeatModel *self;
 
