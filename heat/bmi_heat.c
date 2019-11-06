@@ -374,9 +374,9 @@ Get_value_at_indices (void *self, const char *name, void *dest,
       int i;
       int offset;
       void * ptr;
-      for (i=0, ptr=dest; i<len; i++, ptr+=itemsize) {
+      for (i=0, ptr=dest; i<len; i++, (char *)ptr+=itemsize) {
         offset = inds[i] * itemsize;
-        memcpy (ptr, src + offset, itemsize);
+        memcpy (ptr, (char *)src + offset, itemsize);
       }
     }
   }
@@ -429,9 +429,9 @@ Set_value_at_indices (void *self, const char *name, int * inds, int len,
       int i;
       int offset;
       void * ptr;
-      for (i=0, ptr=src; i<len; i++, ptr+=itemsize) {
+      for (i=0, ptr=src; i<len; i++, (char *)ptr+=itemsize) {
         offset = inds[i] * itemsize;
-        memcpy (to + offset, ptr, itemsize);
+        memcpy ((char *)to + offset, ptr, itemsize);
       }
     }
   }
