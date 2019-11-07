@@ -56,13 +56,13 @@ int main(int argc, char *argv[])
       fprintf(fp, "\nTime = %f\n", time);
 
       {
-	int i, j;
-	for (i=0; i < shape[0]; i++) {
-	  for (j=0; j < shape[1]; j++) {
-	    fprintf(fp, "%6.2e ", var[i*shape[1] + j]);
-	  }
-	  fprintf(fp, "\n");
-	}
+        int i, j;
+        for (i=0; i < shape[0]; i++) {
+          for (j=0; j < shape[1]; j++) {
+            fprintf(fp, "%6.2e ", var[i*shape[1] + j]);
+          }
+          fprintf(fp, "\n");
+        }
       }
 
       model->update(model->self);
