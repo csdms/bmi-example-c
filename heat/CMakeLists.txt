@@ -4,10 +4,11 @@ set (HEAT_VERSION 0.2)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/heatc.pc.cmake
                 ${CMAKE_BINARY_DIR}/heat/heatc.pc)
 
-set (BUILD_SHARED_LIBS ON)
-
-set (bmi_heat_lib_SRCS bmi_heat.c heat.c)
-add_library (bmiheatc ${bmi_heat_lib_SRCS} )
+if(WIN32)
+  add_library(bmiheatc bmi_heat.c heat.c)
+else()
+  add_library(bmiheatc SHARED bmi_heat.c heat.c)
+endif()
 
 ########### Heat main ###############
 
@@ -16,9 +17,14 @@ add_executable (heatc ${heat_sources})
 
 ########### Install files ###############
 
-install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/heatc DESTINATION bin
+install(TARGETS heatc
+  RUNTIME DESTINATION bin
   COMPONENT heat)
-install(TARGETS bmiheatc DESTINATION lib COMPONENT heat)
+install(TARGETS bmiheatc
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  COMPONENT heat)
 install(FILES bmi_heat.h
         DESTINATION include
         COMPONENT heat)

@@ -1,3 +1,10 @@
+#ifdef _WIN32
+#define _CRT_SECURE_NO_WARNINGS
+#define CHAR_CAST (char *)
+#else
+#define CHAR_CAST
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -370,9 +377,9 @@ Get_value_at_indices (void *self, const char *name, void *dest,
       int i;
       int offset;
       void * ptr;
-      for (i=0, ptr=dest; i<len; i++, ptr+=itemsize) {
+      for (i=0, ptr=dest; i<len; i++, CHAR_CAST ptr+=itemsize) {
         offset = inds[i] * itemsize;
-        memcpy (ptr, src + offset, itemsize);
+        memcpy (ptr, CHAR_CAST src + offset, itemsize);
       }
     }
   }
@@ -393,7 +400,7 @@ Set_value (void *self, const char *name, void *array)
     status = Get_value_ptr (self, name, &dest);
     if (status == BMI_FAILURE)
       return status;
-    
+
     status = Get_var_nbytes (self, name, &nbytes);
     if (status == BMI_FAILURE)
       return status;
@@ -425,9 +432,9 @@ Set_value_at_indices (void *self, const char *name, int * inds, int len,
       int i;
       int offset;
       void * ptr;
-      for (i=0, ptr=src; i<len; i++, ptr+=itemsize) {
+      for (i=0, ptr=src; i<len; i++, CHAR_CAST ptr+=itemsize) {
         offset = inds[i] * itemsize;
-        memcpy (to + offset, ptr, itemsize);
+        memcpy (CHAR_CAST to + offset, ptr, itemsize);
       }
     }
   }
@@ -483,7 +490,7 @@ Get_output_var_names (void *self, char ** names)
 
 
 HeatModel *
-new_bmi_heat()
+new_bmi_heat(void)
 {
   HeatModel *self;
 
