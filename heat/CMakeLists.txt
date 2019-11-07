@@ -13,11 +13,13 @@ endif()
 ########### Heat main ###############
 
 set (heat_sources main.c heat.c)
-add_executable (heatc ${heat_sources})
+add_executable (run_heatc ${heat_sources})
+
+add_executable (run_bmiheatc bmi_main.c bmi_heat.c heat.c)
 
 ########### Install files ###############
 
-install(TARGETS heatc
+install(TARGETS run_heatc run_bmiheatc
   RUNTIME DESTINATION bin
   COMPONENT heat)
 install(TARGETS bmiheatc
