@@ -1,5 +1,8 @@
 #ifdef _WIN32
 #define _CRT_SECURE_NO_WARNINGS
+#define CHAR_CAST (char *)
+#else
+#define CHAR_CAST
 #endif
 
 #include <stdio.h>
@@ -374,9 +377,9 @@ Get_value_at_indices (void *self, const char *name, void *dest,
       int i;
       int offset;
       void * ptr;
-      for (i=0, ptr=dest; i<len; i++, (char *)ptr+=itemsize) {
+      for (i=0, ptr=dest; i<len; i++, CHAR_CAST ptr+=itemsize) {
         offset = inds[i] * itemsize;
-        memcpy (ptr, (char *)src + offset, itemsize);
+        memcpy (ptr, CHAR_CAST src + offset, itemsize);
       }
     }
   }
@@ -429,9 +432,9 @@ Set_value_at_indices (void *self, const char *name, int * inds, int len,
       int i;
       int offset;
       void * ptr;
-      for (i=0, ptr=src; i<len; i++, (char *)ptr+=itemsize) {
+      for (i=0, ptr=src; i<len; i++, CHAR_CAST ptr+=itemsize) {
         offset = inds[i] * itemsize;
-        memcpy ((char *)to + offset, ptr, itemsize);
+        memcpy (CHAR_CAST to + offset, ptr, itemsize);
       }
     }
   }
