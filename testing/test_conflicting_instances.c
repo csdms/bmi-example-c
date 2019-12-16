@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <heat.h>
+#include <bmi.h>
 #include <bmi_heat.h>
 
 

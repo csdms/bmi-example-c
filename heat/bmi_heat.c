@@ -11,8 +11,8 @@
 #include <float.h>
 
 #include "heat.h"
+#include <bmi.h>
 #include "bmi_heat.h"
-
 
 #define INPUT_VAR_NAME_COUNT 1
 #define OUTPUT_VAR_NAME_COUNT 1
