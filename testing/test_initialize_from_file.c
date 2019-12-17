@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include <heat.h>
+#include <bmi.h>
 #include <bmi_heat.h>
 
 
