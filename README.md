@@ -74,7 +74,8 @@ The installation will look like
 4 directories, 7 files
 ```
 
-Run tests on the sample implementation with
+From the build directory,
+run unit tests on the sample implementation with
 
     ctest
 
@@ -84,7 +85,7 @@ An additional prerequisite is needed for Windows:
 
 * Microsoft Visual Studio 2017 or Microsoft Build Tools for Visual Studio 2017
 
-To configure this example from source with cmake,
+To configure this example from source with cmake
 using the current C BMI version,
 run the following in a [Developer Command Prompt](https://docs.microsoft.com/en-us/dotnet/framework/tools/developer-command-prompt-for-vs)
 
@@ -103,7 +104,8 @@ Then, to build and install:
 
 	cmake --build . --target install --config Release
 
-Run tests on the sample implementation with
+From the build directory,
+run unit tests on the sample implementation with
 
     ctest
 
