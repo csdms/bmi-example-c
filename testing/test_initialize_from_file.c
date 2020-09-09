@@ -14,12 +14,11 @@ main (void)
   Bmi * model = (Bmi*)malloc (sizeof(Bmi));
 
   register_bmi_heat(model);
-  model->self = new_bmi_heat();
 
   {
     fprintf (stdout, "Initializing... ");
 
-    status = model->initialize(model->self, "config.txt");
+    status = model->initialize(model, "config.txt");
     if (status == BMI_FAILURE)
       return BMI_FAILURE;
 
@@ -29,7 +28,7 @@ main (void)
   {
     char name[BMI_MAX_COMPONENT_NAME];
 
-    status = model->get_component_name(model->self, name);
+    status = model->get_component_name(model, name);
     if (status == BMI_FAILURE)
       return BMI_FAILURE;
 
@@ -39,13 +38,13 @@ main (void)
   {
     double dt, t_end;
 
-    status = model->get_time_step(model->self, &dt);
+    status = model->get_time_step(model, &dt);
     if (status == BMI_FAILURE)
       return BMI_FAILURE;
     else
       fprintf (stdout, "Time step dt = %f\n", dt);
 
-    status = model->get_end_time(model->self, &t_end);
+    status = model->get_end_time(model, &t_end);
     if (status == BMI_FAILURE)
       return BMI_FAILURE;
     else
@@ -54,7 +53,7 @@ main (void)
 
   fprintf (stdout, "Finalizing... ");
 
-  status = model->finalize(model->self);
+  status = model->finalize(model);
   if (status == BMI_FAILURE)
     return BMI_FAILURE;
 

@@ -14,20 +14,19 @@ main (void)
   Bmi * model = (Bmi*)malloc (sizeof(Bmi));
 
   register_bmi_heat(model);
-  model->self = new_bmi_heat();
 
-  if (model->initialize(model->self, NULL) != BMI_SUCCESS || !model)
+  if (model->initialize(model, NULL) != BMI_SUCCESS || !model)
     return BMI_FAILURE;
 
   {
     char name[BMI_MAX_COMPONENT_NAME];
-    model->get_component_name(model->self, name);
+    model->get_component_name(model, name);
     fprintf(stdout, "%s\n\n", name);
   }
 
   print_var_names (model);
 
-  if (model->finalize(model->self) != BMI_SUCCESS)
+  if (model->finalize(model) != BMI_SUCCESS)
     return BMI_FAILURE;
 
   free (model);
@@ -43,13 +42,13 @@ print_var_names (Bmi *model)
     char **names = NULL;
     int i;
 
-    model->get_input_item_count(model->self, &n_names);
+    model->get_input_item_count(model, &n_names);
 
     names = (char**) malloc (sizeof(char *) * n_names);
     for (i=0; i<n_names; i++)
       names[i] = (char*) malloc (sizeof(char) * BMI_MAX_VAR_NAME);
 
-    model->get_input_var_names(model->self, names);
+    model->get_input_var_names(model, names);
 
     fprintf (stdout, "Input var names\n");
     fprintf (stdout, "===============\n");
@@ -69,13 +68,13 @@ print_var_names (Bmi *model)
     char **names = NULL;
     int i;
 
-    model->get_output_item_count(model->self, &n_names);
+    model->get_output_item_count(model, &n_names);
 
     names = (char**) malloc (sizeof(char *) * n_names);
     for (i=0; i<n_names; i++)
       names[i] = (char*) malloc (sizeof(char) * BMI_MAX_VAR_NAME);
 
-    model->get_output_var_names(model->self, names);
+    model->get_output_var_names(model, names);
 
     fprintf (stdout, "Output var names\n");
     fprintf (stdout, "================\n");

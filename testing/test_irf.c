@@ -14,13 +14,12 @@ main (void)
   Bmi * model = (Bmi*)malloc (sizeof(Bmi));
 
   register_bmi_heat(model);
-  model->self = new_bmi_heat();
 
   {
     fprintf (stdout, "Initializing... ");
     fflush(stdout);
 
-    status = model->initialize(model->self, NULL);
+    status = model->initialize(model, NULL);
     if (status == BMI_FAILURE)
       return BMI_FAILURE;
 
@@ -30,7 +29,7 @@ main (void)
   {
     char name[BMI_MAX_COMPONENT_NAME];
 
-    status = model->get_component_name(model->self, name);
+    status = model->get_component_name(model, name);
     if (status == BMI_FAILURE)
       return BMI_FAILURE;
 
@@ -43,7 +42,7 @@ main (void)
     double time;
     double dt;
 
-    status = model->get_time_step(model->self, &dt);
+    status = model->get_time_step(model, &dt);
     if (status == BMI_FAILURE)
       return BMI_FAILURE;
 
@@ -51,11 +50,11 @@ main (void)
     {
       fprintf (stdout, "Running until t = %d... ", i+1);
 
-      status = model->update(model->self);
+      status = model->update(model);
       if (status == BMI_FAILURE)
         return BMI_FAILURE;
       
-      status = model->get_current_time(model->self, &time);
+      status = model->get_current_time(model, &time);
       if (status == BMI_FAILURE)
         return BMI_FAILURE;
 
@@ -67,11 +66,11 @@ main (void)
 
     fprintf (stdout, "Running until t = %f... ", 1000.5);
 
-    status = model->update_until(model->self, 1000.5);
+    status = model->update_until(model, 1000.5);
     if (status == BMI_FAILURE)
       return BMI_FAILURE;
 
-    status = model->get_current_time(model->self, &time);
+    status = model->get_current_time(model, &time);
     if (status == BMI_FAILURE)
       return BMI_FAILURE;
 
@@ -85,7 +84,7 @@ main (void)
 
   fprintf (stdout, "Finalizing... ");
 
-  status = model->finalize(model->self);
+  status = model->finalize(model);
   if (status == BMI_FAILURE)
     return BMI_FAILURE;
 
