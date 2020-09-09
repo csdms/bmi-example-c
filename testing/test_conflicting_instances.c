@@ -14,15 +14,13 @@ main (void)
 
   register_bmi_heat(model1);
   register_bmi_heat(model2);
-  model1->self = new_bmi_heat();
-  model2->self = new_bmi_heat();
 
-  if (model1->initialize(model1->self, NULL) != BMI_SUCCESS || !model1)
+  if (model1->initialize(model1, NULL) != BMI_SUCCESS || !model1)
     return BMI_FAILURE;
   else
     fprintf(stdout, "Model 1 initialized\n");
 
-  if (model2->initialize(model2->self, NULL) != BMI_SUCCESS || !model2)
+  if (model2->initialize(model2, NULL) != BMI_SUCCESS || !model2)
     return BMI_FAILURE;
   else
     fprintf(stdout, "Model 2 initialized\n");
@@ -35,21 +33,21 @@ main (void)
     double vals[5] = {11, 22, 44, 88, 1616};
     double *p1, *p2;
 
-    model1->get_value_ptr(model1->self, name, (void**)(&p1));
+    model1->get_value_ptr(model1, name, (void**)(&p1));
     fprintf(stdout, "Model 1 temperatures, initial...\n");
     for (i=0; i<5; i++) {
       fprintf (stdout, "%f ", p1[inds[i]]);
     }
     fprintf (stdout, "\n");
 
-    model1->set_value_at_indices(model1->self, name, inds, 5, vals);
+    model1->set_value_at_indices(model1, name, inds, 5, vals);
     fprintf(stdout, "Model 1 temperatures, changed...\n");
     for (i=0; i<5; i++) {
       fprintf (stdout, "%f ", p1[inds[i]]);
     }
     fprintf (stdout, "\n");
 
-    model2->get_value_ptr(model2->self, name, (void**)(&p2));
+    model2->get_value_ptr(model2, name, (void**)(&p2));
     fprintf(stdout, "Model 2 temperatures...\n");
     for (i=0; i<5; i++) {
       fprintf (stdout, "%f ", p2[inds[i]]);
@@ -63,12 +61,12 @@ main (void)
     fprintf (stdout, "\n");
   }
 
-  if (model1->finalize(model1->self) != BMI_SUCCESS)
+  if (model1->finalize(model1) != BMI_SUCCESS)
     return BMI_FAILURE;
   else
     fprintf(stdout, "Model 1 finalized\n");
 
-  if (model2->finalize(model2->self) != BMI_SUCCESS)
+  if (model2->finalize(model2) != BMI_SUCCESS)
     return BMI_FAILURE;
   else
     fprintf(stdout, "Model 2 finalized\n");

@@ -16,13 +16,12 @@ main (void)
   Bmi * model = (Bmi*)malloc (sizeof(Bmi));
 
   register_bmi_heat(model);
-  model->self = new_bmi_heat();
 
-  model->initialize(model->self, NULL);
+  model->initialize(model, NULL);
 
   {
     char name[BMI_MAX_COMPONENT_NAME];
-    model->get_component_name(model->self, name);
+    model->get_component_name(model, name);
     fprintf (stdout, "%s\n", name);
   }
 
@@ -32,14 +31,14 @@ main (void)
     fprintf (stdout, "==============\n");
     print_var_values (model, "plate_surface__temperature");
 
-    model->update(model->self);
+    model->update(model);
   }
 
   fprintf (stdout, "Values at time %d\n", i);
   fprintf (stdout, "==============\n");
   print_var_values (model, "plate_surface__temperature");
 
-  model->finalize(model->self);
+  model->finalize(model);
 
   free (model);
 
@@ -55,13 +54,13 @@ print_var_values(Bmi *model, const char *var_name)
   int *shape;
   int grid;
 
-  model->get_var_grid(model->self, var_name, &grid);
+  model->get_var_grid(model, var_name, &grid);
 
-  model->get_grid_rank(model->self, grid, &rank);
+  model->get_grid_rank(model, grid, &rank);
   fprintf (stderr, "rank = %d\n", rank);
   shape = (int*) malloc (sizeof (int) * rank);
 
-  model->get_grid_shape(model->self, grid, shape);
+  model->get_grid_shape(model, grid, shape);
   fprintf (stderr, "shape = %d x %d\n", shape[0], shape[1]);
 
   {
@@ -72,7 +71,7 @@ print_var_values(Bmi *model, const char *var_name)
 
   var = (double*) malloc (sizeof (double)*len);
 
-  model->get_value(model->self, var_name, var);
+  model->get_value(model, var_name, var);
 
   fprintf (stdout, "Variable: %s\n", var_name);
   fprintf (stdout, "================\n");

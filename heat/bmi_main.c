@@ -21,16 +21,15 @@ int main(int argc, char *argv[])
   fprintf(fp, "Configuration file = %s\n", argv[1]);
 
   register_bmi_heat(model);
-  model->self = new_bmi_heat();
 
   fprintf(fp, "Initializing... ");
-  model->initialize(model->self, argv[1]);
+  model->initialize(model, argv[1]);
   fprintf(fp, "done\n");
 
   {
     char model_name[BMI_MAX_COMPONENT_NAME];
 
-    model->get_component_name(model->self, model_name);
+    model->get_component_name(model, model_name);
     fprintf(fp, "%s\n", model_name);
   }
 
@@ -42,19 +41,19 @@ int main(int argc, char *argv[])
     double end_time;
 
     fprintf(fp, "variable = %s\n", var_name);
-    model->get_var_grid(model->self, var_name, &grid);
+    model->get_var_grid(model, var_name, &grid);
 
-    model->get_grid_rank(model->self, grid, &rank);
+    model->get_grid_rank(model, grid, &rank);
     fprintf(fp, "rank = %d\n", rank);
     shape = (int *) malloc (sizeof(int) * rank);
-    model->get_grid_shape(model->self, grid, shape);
+    model->get_grid_shape(model, grid, shape);
     fprintf(fp, "shape = %d x %d\n", shape[0], shape[1]);
 
-    model->get_value_ptr(model->self, var_name, (void **)(&var));
+    model->get_value_ptr(model, var_name, (void **)(&var));
     
-    model->get_end_time(model->self, &end_time);
+    model->get_end_time(model, &end_time);
     while (time < end_time) {
-      model->get_current_time(model->self, &time);
+      model->get_current_time(model, &time);
       fprintf(fp, "\nTime = %f\n", time);
 
       {
@@ -67,12 +66,12 @@ int main(int argc, char *argv[])
         }
       }
 
-      model->update(model->self);
+      model->update(model);
     }
   }
   
   fprintf(fp, "Finalizing... ");
-  model->finalize(model->self);
+  model->finalize(model);
   fprintf(fp, "done\n");
 
   free(model);

@@ -16,15 +16,14 @@ main (void)
   Bmi * model = (Bmi*)malloc (sizeof(Bmi));
 
   register_bmi_heat(model);
-  model->self = new_bmi_heat();
 
-  err = model->initialize(model->self, NULL);
+  err = model->initialize(model, NULL);
   if (err)
     return EXIT_FAILURE;
 
   {
     char name[BMI_MAX_COMPONENT_NAME];
-    model->get_component_name(model->self, name);
+    model->get_component_name(model, name);
   
     fprintf (stdout, "%s\n", name);
   }
@@ -36,11 +35,11 @@ main (void)
     int i;
     int grid;
 
-    model->get_var_grid(model->self, "plate_surface__temperature", &grid);
-    model->get_grid_rank(model->self, grid, &n_dims);
+    model->get_var_grid(model, "plate_surface__temperature", &grid);
+    model->get_grid_rank(model, grid, &n_dims);
     shape = (int*) malloc (sizeof (int)*n_dims);
 
-    model->get_grid_shape(model->self, grid, shape);
+    model->get_grid_shape(model, grid, shape);
     for (i = 0, len = 1; i < n_dims; i++)
       len *= shape[i];
 
@@ -55,7 +54,7 @@ main (void)
   fprintf (stdout, "=================\n");
   print_var_values (model, "plate_surface__temperature");
 
-  model->set_value(model->self, "plate_surface__temperature", new_vals);
+  model->set_value(model, "plate_surface__temperature", new_vals);
 
   fprintf (stdout, "Values after set\n");
   fprintf (stdout, "================\n");
@@ -67,10 +66,10 @@ main (void)
     double *p;
     int i;
 
-    model->set_value_at_indices(model->self, "plate_surface__temperature", inds, 5, vals);
+    model->set_value_at_indices(model, "plate_surface__temperature", inds, 5, vals);
     print_var_values (model, "plate_surface__temperature");
 
-    model->get_value_ptr(model->self, "plate_surface__temperature", (void**)(&p));
+    model->get_value_ptr(model, "plate_surface__temperature", (void**)(&p));
     for (i=0; i<5; i++) {
       fprintf (stdout, "Checking %d...", inds[i]);
       if (p[inds[i]] == vals[i])
@@ -80,7 +79,7 @@ main (void)
 
   free (new_vals);
 
-  model->finalize(model->self);
+  model->finalize(model);
 
   free (model);
 
@@ -95,12 +94,12 @@ print_var_values(Bmi *model, const char *var_name)
   int *shape = NULL;
   int grid;
 
-  model->get_var_grid(model->self, var_name, &grid);
-  model->get_grid_rank(model->self, grid, &n_dims);
+  model->get_var_grid(model, var_name, &grid);
+  model->get_grid_rank(model, grid, &n_dims);
   shape = (int*) malloc (sizeof (int)*n_dims);
 
-  model->get_grid_shape(model->self, grid, shape);
-  model->get_value_ptr(model->self, var_name, (void**)(&var));
+  model->get_grid_shape(model, grid, shape);
+  model->get_value_ptr(model, var_name, (void**)(&var));
 
   fprintf (stdout, "Variable: %s\n", var_name);
   fprintf (stdout, "Number of dimension: %d\n", n_dims);

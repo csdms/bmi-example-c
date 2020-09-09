@@ -14,13 +14,12 @@ main (void)
   Bmi *model = (Bmi*)malloc (sizeof(Bmi));
 
   register_bmi_heat(model);
-  model->self = new_bmi_heat();
 
-  model->initialize(model->self, NULL);
+  model->initialize(model, NULL);
 
   {
     char name[BMI_MAX_COMPONENT_NAME];
-    model->get_component_name(model->self, name);
+    model->get_component_name(model, name);
     fprintf (stdout, "%s\n", name);
   }
 
@@ -29,13 +28,13 @@ main (void)
     char **names = NULL;
     int i;
 
-    model->get_input_item_count(model->self, &n_names);
+    model->get_input_item_count(model, &n_names);
 
     names = (char**) malloc (sizeof(char*) * n_names);
     for (i = 0; i<n_names; i++)
       names[i] = (char*) malloc (sizeof (char) * BMI_MAX_VAR_NAME);
 
-    model->get_input_var_names(model->self, names);
+    model->get_input_var_names(model, names);
     for (i = 0; i<n_names; i++)
       print_var_info (model, names[i]);
 
@@ -49,13 +48,13 @@ main (void)
     char **names = NULL;
     int i;
 
-    model->get_output_item_count(model->self, &n_names);
+    model->get_output_item_count(model, &n_names);
 
     names = (char**) malloc (sizeof(char*) * n_names);
     for (i = 0; i<n_names; i++)
       names[i] = (char*) malloc (sizeof (char) * BMI_MAX_VAR_NAME);
 
-    model->get_output_var_names(model->self, names);
+    model->get_output_var_names(model, names);
     fprintf(stdout, "no names is %d\n", n_names); fflush(stdout);
     for (i = 0; i<n_names; i++)
       print_var_info (model, names[i]);
@@ -65,7 +64,7 @@ main (void)
     free (names);
   }
 
-  model->finalize(model->self);
+  model->finalize(model);
 
   free (model);
 
@@ -83,18 +82,18 @@ print_var_info (Bmi *model, const char *var)
   double *origin;
   int grid;
 
-  model->get_var_grid(model->self, var, &grid);
-  model->get_var_type(model->self, var, type);
-  model->get_var_units(model->self, var, units);
-  model->get_grid_rank(model->self, grid, &n_dims);
+  model->get_var_grid(model, var, &grid);
+  model->get_var_type(model, var, type);
+  model->get_var_units(model, var, units);
+  model->get_grid_rank(model, grid, &n_dims);
 
   shape = (int*) malloc (sizeof (int)*n_dims);
   spacing = (double*) malloc (sizeof (double)*n_dims);
   origin = (double*) malloc (sizeof (double)*n_dims);
 
-  model->get_grid_shape(model->self, grid, shape);
-  model->get_grid_spacing(model->self, grid, spacing);
-  model->get_grid_origin(model->self, grid, origin);
+  model->get_grid_shape(model, grid, shape);
+  model->get_grid_spacing(model, grid, spacing);
+  model->get_grid_origin(model, grid, origin);
 
   fprintf (stdout, "\n");
   fprintf (stdout, "Variable info\n");
