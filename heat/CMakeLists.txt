@@ -27,7 +27,7 @@ install(TARGETS bmiheatc
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
   COMPONENT heat)
-install(FILES bmi_heat.h
+install(FILES bmi_heat.h heat.h
         DESTINATION include
         COMPONENT heat)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/heatc.pc
