@@ -1,4 +1,4 @@
-name: Conda + CMake build/test
+name: conda-cmake-build
 
 on: [push, pull_request]
 
