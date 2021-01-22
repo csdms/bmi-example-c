@@ -14,7 +14,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         python-version: ["3.8"]
-        build-type: ["Release"]
+        build-type: [Release]
 
     steps:
       - uses: actions/checkout@v2
@@ -37,8 +37,8 @@ jobs:
           conda list
 
       - name: Make cmake build directory
-        run: cmake -E make_directory $GITHUB_WORKSPACE/build
+        run: cmake -E make_directory ${{ github.workspace }}/build
 
       - name: Configure cmake
-        working-directory: $GITHUB_WORKSPACE/build
+        working-directory: ${{ github.workspace }}/build
         run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
