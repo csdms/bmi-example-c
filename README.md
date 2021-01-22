@@ -1,4 +1,5 @@
 [![Basic Model Interface](https://img.shields.io/badge/CSDMS-Basic%20Model%20Interface-green.svg)](https://bmi.readthedocs.io/)
+![conda-cmake-build](https://github.com/csdms/bmi-example-c/workflows/conda-cmake-build/badge.svg)
 
 # bmi-example-c
 
