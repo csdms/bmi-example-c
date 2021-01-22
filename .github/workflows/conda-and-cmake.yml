@@ -3,7 +3,7 @@ name: Conda + CMake build/test
 on: [push, pull_request]
 
 jobs:
-  conda-build:
+  build-and-test:
     runs-on: ${{ matrix.os }}
 
     defaults:
@@ -18,6 +18,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
       - uses: conda-incubator/setup-miniconda@v2
         with:
           auto-update-conda: true
@@ -30,7 +31,14 @@ jobs:
           conda info
           conda list
 
-      - name: Install packages into env
+      - name: Install build tools and dependencies into env
         run: |
           conda install c-compiler cmake pkg-config bmi-c
           conda list
+
+      - name: Make cmake build directory
+        run: cmake -E make_directory $GITHUB_WORKSPACE/build
+
+      - name: Configure cmake
+        working-directory: $GITHUB_WORKSPACE/build
+        run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
