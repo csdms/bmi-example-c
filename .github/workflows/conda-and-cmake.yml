@@ -1,0 +1,36 @@
+name: Conda + CMake build/test
+
+on: [push, pull_request]
+
+jobs:
+  conda-build:
+    runs-on: ${{ matrix.os }}
+
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.8"]
+        build-type: ["Release"]
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
+          channels: conda-forge
+          channel-priority: true
+
+      - name: Show conda installation info
+        run: |
+          conda info
+          conda list
+
+      - name: Install packages into env
+        run: |
+          conda install c-compiler cmake pkg-config bmi-c
+          conda list
