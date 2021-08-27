@@ -550,7 +550,7 @@ register_bmi_heat(Bmi *model)
     model->get_grid_y = NULL;
     model->get_grid_z = NULL;
 
-    model->get_grid_node_count = NULL;
+    model->get_grid_node_count = Get_grid_size;
     model->get_grid_edge_count = NULL;
     model->get_grid_face_count = NULL;
     model->get_grid_edge_nodes = NULL;
