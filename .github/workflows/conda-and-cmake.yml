@@ -4,6 +4,11 @@ on: [push, pull_request]
 
 jobs:
   build-linux-and-macos:
+
+    if:
+      github.event_name == 'push' || github.event.pull_request.head.repo.full_name !=
+      github.repository
+
     runs-on: ${{ matrix.os }}
 
     defaults:
@@ -50,6 +55,11 @@ jobs:
         run: ctest -C ${{ matrix.build-type }} --output-on-failure
 
   build-windows:
+
+    if:
+      github.event_name == 'push' || github.event.pull_request.head.repo.full_name !=
+      github.repository
+
     runs-on: windows-latest
 
     env:
