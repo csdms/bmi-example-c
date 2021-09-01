@@ -110,7 +110,7 @@ initialize_arrays (HeatModel *self)
     }
     for (i = 0; i < n_cols; i++) {
       self->z[0][i] = 0.;
-      self->z[n_rows-1][i] = top_x*top_x*.25 - (i-top_x*.5) * (i-top_x*.5);
+      self->z[n_rows-1][i] = 0.;
     }
 
     memcpy (self->temp_z[0], self->z[0], sizeof (double) * n_elements);
