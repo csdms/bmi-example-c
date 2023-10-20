@@ -1,6 +1,12 @@
-cmake_minimum_required(VERSION 3.0)
+# bmi-example-c
 
-project (bmi-example-c C)
+cmake_minimum_required(VERSION 3.12)
+project (bmi-example-c LANGUAGES C)
+
+include(GNUInstallDirs)
+
+set(model_name heatc)
+set(bmi_name bmi${model_name})
 
 set(_cflags "-ansi -Wall -Wundef -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -O2")
 if(NOT WIN32)
@@ -13,10 +19,10 @@ endif()
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(BMIC REQUIRED IMPORTED_TARGET bmic)
-message("--   bmic include - ${BMIC_INCLUDE_DIRS}")
+message("--   bmic include dir - ${BMIC_INCLUDE_DIRS}")
 include_directories(${BMIC_INCLUDE_DIRS})
 
-add_subdirectory (heat)
-add_subdirectory (testing)
+add_subdirectory(heat)
+add_subdirectory(testing)
 
-include (CTest)
+include(CTest)
