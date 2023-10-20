@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
 
-project (bmi-example-c C)
+project (bmi-example-c LANGUAGES C)
+
+include(GNUInstallDirs)
 
 set(_cflags "-ansi -Wall -Wundef -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -O2")
 if(NOT WIN32)
