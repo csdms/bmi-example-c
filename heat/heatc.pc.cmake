@@ -1,5 +1,5 @@
 Name: HeatC
 Description: 2D Heat Equation
-Version: ${HEAT_VERSION}
-Libs: -L${CMAKE_INSTALL_PREFIX}/lib -lbmiheatc
-Cflags: -I${CMAKE_INSTALL_PREFIX}/include
+Version: ${CMAKE_PROJECT_VERSION}
+Libs: -L${CMAKE_INSTALL_LIBDIR} -l${bmi_name}
+Cflags: -I${CMAKE_INSTALL_INCLUDEDIR}
