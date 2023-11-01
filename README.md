@@ -68,14 +68,17 @@ The installation will look like
 |   `-- run_heatc
 |-- include
 |   |-- bmi.h
+|   |-- heat.h
 |   `-- bmi_heat.h
 `-- lib
     |-- libbmiheatc.dylib
+    |-- libheatc.dylib
     `-- pkgconfig
         |-- bmic.pc
-        `-- heatc.pc
+        |-- heatc.pc
+        `-- bmiheatc.pc
 
-4 directories, 7 files
+4 directories, 10 files
 ```
 
 From the build directory,
