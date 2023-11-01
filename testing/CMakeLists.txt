@@ -1,4 +1,4 @@
-# test (heatc)
+# test (heat)
 
 include(CTest)
 
