@@ -1,4 +1,4 @@
-# heatc
+# heat
 
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/${model_name}.pc.cmake
